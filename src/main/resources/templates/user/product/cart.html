@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Carrinho - GeekStore</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/user/common.css">
+  <link rel="stylesheet" href="/css/user/product/cart.css" />
+</head>
+
+<body>
+  <!-- ===== NAVBAR ===== -->
+  <header>
+    <div class="logo"><i class="fa-solid fa-gamepad"></i> GeekStore</div>
+    <div class="nav-toggle"><i class="fa-solid fa-bars"></i></div>
+    <nav>
+      <ul>
+        <li><a th:href="@{/}">Início</a></li>
+        <li><a th:href="@{/cart}"><i class="fa-solid fa-cart-shopping"></i> Carrinho</a></li>
+        <li th:if="${user != null}"><a th:href="@{/profile}">Perfil</a></li>
+        <li th:if="${user != null}"><a th:href="@{/logout}">Sair</a></li>
+        <li th:if="${user != null and user.role == 'ADMIN'}"><a th:href="@{/admin/products}">Painel Admin</a></li>
+        <li th:if="${user == null}"><a th:href="@{/login}">Entrar</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <div class="container">
+      <h1>🛒 Meu Carrinho</h1>
+
+      <div th:if="${#lists.isEmpty(cartItems)}" class="empty-cart-msg">
+        🛒 Seu carrinho está vazio!
+      </div>
+
+      <div class="cart-items" th:unless="${#lists.isEmpty(cartItems)}">
+        <div class="item" th:each="item : ${cartItems}">
+          <img th:src="@{/{filename}(filename=${item.product.imageUrl})}" th:alt="${item.product.name}" />
+          <div class="item-info">
+            <h3 th:text="${item.product.name}">Nome do Produto</h3>
+
+            <!-- Categoria -->
+            <p class="product-category" th:text="${item.product.category?.name} ?: 'Sem categoria'">Categoria</p>
+
+            <p th:text="'R$ ' + ${item.product.price}">R$ 0,00</p>
+          </div>
+          <div class="item-actions">
+            <form th:action="@{/cart/add}" method="post" class="update-quantity-form">
+              <input type="hidden" name="productId" th:value="${item.product.id}" />
+              <input type="number" name="quantity" th:value="${item.quantity}" min="1" class="quantity-input" />
+              <button type="submit" class="update-btn" title="Atualizar quantidade">
+                <i class="fa-solid fa-arrows-rotate"></i>
+              </button>
+            </form>
+
+            <form th:action="@{/cart/remove}" method="post">
+              <input type="hidden" name="productId" th:value="${item.product.id}" />
+              <button type="submit" class="remove-btn" title="Remover item">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <div th:if="${errorMessage != null}" class="alert alert-error">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <span th:text="${errorMessage}"></span>
+        </div>
+
+        <div th:if="${successMessage != null}" class="alert alert-success">
+          <i class="fa-solid fa-circle-check"></i>
+          <span th:text="${successMessage}"></span>
+        </div>
+      </div>
+
+      <div class="summary" th:unless="${#lists.isEmpty(cartItems)}">
+        <h2>Resumo do Pedido</h2>
+        <p>Subtotal: <span th:text="'R$ ' + ${subtotal}">R$ 0,00</span></p>
+        <p>Frete: <span>Grátis</span></p>
+        <hr />
+        <p>Total: <span th:text="'R$ ' + ${total}">R$ 0,00</span></p>
+
+        <form th:action="@{/cart/checkout}" method="get">
+          <button type="submit" class="btn-finalizar">Finalizar Compra</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <footer>&copy; 2025 GeekStore — Todos os direitos reservados.</footer>
+
+  <script src="/js/user/product/nav-toggle.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,41 @@
+/* ===== HEADER ===== */
+header {
+    background-color: var(--card-bg);
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    color: var(--accent);
+    font-size: 28px;
+    font-weight: bold;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+header nav a,
+.user-menu a {
+    color: var(--text-main);
+    margin-left: 25px;
+    font-weight: 500;
+}
+
+header nav a:hover,
+.user-menu a:hover {
+    color: var(--primary);
+}
+
+/* ===== FOOTER ===== */
+footer {
+    text-align: center;
+    padding: 25px;
+    background-color: var(--card-bg);
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-top: auto;
+}

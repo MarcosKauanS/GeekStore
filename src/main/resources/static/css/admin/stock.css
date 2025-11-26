@@ -1,0 +1,9 @@
+/* ==================================== */
+/* 📊 Estilos Específicos - Estoque     */
+/* ==================================== */
+
+td img {
+    width: 60px;
+    border-radius: 8px;
+    object-fit: cover;
+}

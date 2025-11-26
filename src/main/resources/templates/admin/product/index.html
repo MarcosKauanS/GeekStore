@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin - Gerenciar Produtos | GeekStore</title>
+  <link rel="stylesheet" href="/css/admin/base.css">
+  <link rel="stylesheet" href="/css/admin/product.css">
+</head>
+
+<body>
+  <aside class="sidebar">
+    <div>
+      <div class="logo">GeekStore Admin</div>
+      <nav>
+        <a href="/" class="back-to-site"><span>⬅️</span> Voltar ao Site</a>
+        <a th:href="@{/admin/products}" class="active">Produtos</a>
+        <a th:href="@{/admin/stocks}">Estoque</a>
+        <a th:href="@{/admin/users}">Usuários</a>
+        <a th:href="@{/admin/orders}">Pedidos</a>
+        <a th:href="@{/admin/categories}">Categorias</a>
+      </nav>
+    </div>
+    <div class="logout" th:onclick="'window.location.href=\'/logout\''">Sair</div>
+  </aside>
+
+  <main class="main">
+    <h1>Gerenciar Produtos</h1>
+
+    <button class="btn-add" id="openModal">+ Adicionar Produto</button>
+
+    <table>
+      <thead>
+        <tr>
+          <th class="desktop-only">Imagem</th>
+
+          <th>Nome</th>
+
+          <th class="desktop-only">Preço</th>
+          <th class="desktop-only">Categoria</th>
+
+          <th class="actions-header">Ações</th>
+          <th class="more-column-header">Ver mais</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="product : ${products}">
+          <td class="desktop-only">
+            <img th:src="@{/{filename}(filename=${product.imageUrl})}" th:alt="${product.name}" />
+          </td>
+
+          <td th:text="${product.name}">Nome do Produto</td>
+
+          <td class="desktop-only" th:text="${#numbers.formatDecimal(product.price, 1, 2)}">0.00</td>
+          <td class="desktop-only" th:text="${product.category != null ? product.category.name : 'Sem Categoria'}">
+            Categoria</td>
+
+          <td class="actions">
+            <a href="#" class="edit" th:attr="data-id=${product.id},
+                                         data-name=${product.name},
+                                         data-price=${product.price},
+                                         data-category=${product.category != null ? product.category.id : ''},
+                                         data-image=${product.imageUrl}">
+              ✏️
+            </a>
+            <a th:href="@{/admin/products/delete/{id}(id=${product.id})}" class="delete">🗑️</a>
+          </td>
+
+          <td class="more-column">
+            <a href="#" class="view" th:attr="data-id=${product.id},
+                                         data-name=${product.name},
+                                         data-price=${product.price},
+                                         data-category=${product.category != null ? product.category.name : 'Sem Categoria'},
+                                         data-image=@{/{filename}(filename=${product.imageUrl})},
+                                         data-cat-id=${product.category != null ? product.category.id : ''},
+                                         data-raw-image=${product.imageUrl},
+                                         data-delete=@{/admin/products/delete/{id}(id=${product.id})}">
+              👁️ Ver mais
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </main>
+
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <span class="close" id="closeModal">×</span>
+      <h2 id="modalTitle">Adicionar Produto</h2>
+      <form th:action="@{/admin/products}" method="post" enctype="multipart/form-data" id="productForm">
+        <input type="hidden" id="productId" name="id" />
+
+        <label for="produto-nome">Nome</label>
+        <input type="text" id="produto-nome" name="name" placeholder="Nome do produto" required />
+
+        <label for="produto-preco">Preço</label>
+        <input type="number" id="produto-preco" name="price" placeholder="0.00" required min="0" step="0.01" />
+
+        <label for="produto-categoria">Categoria</label>
+        <select id="produto-categoria" name="category.id" required>
+          <option value="">Selecione uma categoria</option>
+          <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}"></option>
+        </select>
+
+        <label>Imagem</label>
+        <label for="produto-imagem" class="file-label">Selecionar Imagem do Produto</label>
+        <input type="file" id="produto-imagem" name="image" accept="image/*" />
+
+        <div style="margin-top: 10px; text-align: center;">
+          <img id="previewImage" class="preview-img" src="" alt="Preview"
+            style="display: none; max-width: 100px; max-height: 100px; border-radius: 5px;" />
+        </div>
+
+        <button type="submit" class="btn-save" id="btnSave">Salvar Produto</button>
+        <button type="button" class="btn-cancel" id="cancelModal">Cancelar</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="viewModalOverlay">
+    <div class="modal">
+      <span class="close" id="closeViewModal">×</span>
+      <h2>Detalhes do Produto</h2>
+
+      <div style="text-align: center; margin-bottom: 15px;">
+        <img id="viewImage" src="" alt="Produto" style="max-width: 100%; max-height: 150px; border-radius: 8px;">
+      </div>
+
+      <label>ID</label>
+      <p id="viewId" class="view-text"></p>
+
+      <label>Nome</label>
+      <p id="viewName" class="view-text"></p>
+
+      <label>Preço</label>
+      <p id="viewPrice" class="view-text"></p>
+
+      <label>Categoria</label>
+      <p id="viewCategory" class="view-text"></p>
+
+      <div class="modal-actions">
+        <button id="btnViewEdit" class="btn-action edit">✏️ Editar</button>
+        <a id="btnViewDelete" href="#" class="btn-action delete">🗑️ Remover</a>
+      </div>
+
+      <button type="button" class="btn-cancel" id="closeViewButton" style="margin-top: 15px;">Fechar</button>
+    </div>
+  </div>
+
+  <script src="/js/admin/modal/common.js"></script>
+  <script src="/js/admin/modal/product.js"></script>
+</body>
+
+</html>

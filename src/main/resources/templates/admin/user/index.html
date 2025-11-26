@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin - Gerenciar Usuários | GeekStore</title>
+  <link rel="stylesheet" href="/css/admin/base.css">
+</head>
+
+<body>
+  <aside class="sidebar">
+    <div>
+      <div class="logo">GeekStore Admin</div>
+      <nav>
+        <a href="/" class="back-to-site"><span>⬅️</span> Voltar ao Site</a>
+        <a th:href="@{/admin/products}">Produtos</a>
+        <a th:href="@{/admin/stocks}">Estoque</a>
+        <a th:href="@{/admin/users}" class="active">Usuários</a>
+        <a th:href="@{/admin/orders}">Pedidos</a>
+        <a th:href="@{/admin/categories}">Categorias</a>
+      </nav>
+    </div>
+    <div class="logout" th:onclick="'window.location.href=\'/logout\''">Sair</div>
+  </aside>
+
+  <main class="main">
+    <h1>Gerenciar Usuários</h1>
+    <button class="btn-add" id="openModal">+ Adicionar Usuário</button>
+    <table>
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th class="desktop-only">E-mail</th>
+          <th class="desktop-only">Perfil</th>
+          <th class="actions-header">Ações</th>
+          <th class="more-column-header">Ver mais</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="user : ${users}">
+          <td th:text="${user.name}">Nome</td>
+          <td class="desktop-only" th:text="${user.email}">email@email.com</td>
+          <td class="desktop-only" th:text="${user.role}">CLIENTE</td>
+          <td class="actions">
+            <a href="#" class="edit"
+              th:attr="data-id=${user.id},data-name=${user.name},data-email=${user.email},data-role=${user.role}">✏️</a>
+            <a th:href="@{/admin/users/delete/{id}(id=${user.id})}" class="delete">🗑️</a>
+          </td>
+          <td class="more-column">
+            <a href="#" class="view"
+              th:attr="data-id=${user.id},data-name=${user.name},data-email=${user.email},data-role=${user.role},data-delete=@{/admin/users/delete/{id}(id=${user.id})}">👁️
+              Ver mais</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </main>
+
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <span class="close" id="closeModal">×</span>
+      <h2 id="modalTitle">Adicionar Usuário</h2>
+      <form id="userForm" th:action="@{/admin/users}" method="post">
+        <input type="hidden" name="id" id="userId" />
+        <label for="name">Nome</label>
+        <input type="text" id="name" name="name" required />
+        <label for="email">E-mail</label>
+        <input type="email" id="email" name="email" required />
+        <label for="password">Senha</label>
+        <input type="password" id="password" name="password" required />
+        <label for="role">Perfil</label>
+        <select id="role" name="role" required>
+          <option value="ADMIN">Admin</option>
+          <option value="CLIENTE">Cliente</option>
+        </select>
+        <button type="submit" class="btn-save">Salvar Usuário</button>
+        <button type="button" class="btn-cancel" id="cancelModal">Cancelar</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="viewModalOverlay">
+    <div class="modal">
+      <span class="close" id="closeViewModal">×</span>
+      <h2>Detalhes do Usuário</h2>
+      <label>ID</label>
+      <p id="viewId" class="view-text"></p>
+      <label>Nome</label>
+      <p id="viewName" class="view-text"></p>
+      <label>E-mail</label>
+      <p id="viewEmail" class="view-text"></p>
+      <label>Perfil</label>
+      <p id="viewRole" class="view-text"></p>
+      <div class="modal-actions">
+        <button id="btnViewEdit" class="btn-action edit">✏️ Editar</button>
+        <a id="btnViewDelete" href="#" class="btn-action delete">🗑️ Remover</a>
+      </div>
+      <button type="button" class="btn-cancel" id="closeViewButton" style="margin-top: 15px;">Fechar</button>
+    </div>
+  </div>
+
+  <script src="/js/admin/modal/common.js"></script>
+  <script src="/js/admin/modal/user.js"></script>
+</body>
+
+</html>

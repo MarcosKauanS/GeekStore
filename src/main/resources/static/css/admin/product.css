@@ -1,0 +1,17 @@
+/* ==================================== */
+/* 📦 Estilos Específicos - Produtos    */
+/* ==================================== */
+
+td img {
+    width: 60px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.preview-img {
+    width: 100px;
+    height: 100px;
+    margin-top: 10px;
+    border-radius: 6px;
+    object-fit: cover;
+}

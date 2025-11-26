@@ -1,0 +1,116 @@
+/* auth/form.css */
+
+/* 1. Removemos o justify-content do body */
+body {
+    align-items: center; /* Centraliza horizontalmente */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    /* justify-content: center; <-- REMOVIDO (causava conflito) */
+}
+
+/* O Card do Formulário */
+.login-container,
+.form-card {
+    background-color: var(--card-bg);
+    padding: 50px 40px;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    width: 90%;
+    max-width: 500px;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+    
+    /* 2. ADICIONADO: Isso faz o card flutuar para o centro vertical e horizontal do espaço disponível */
+    margin: auto; 
+}
+
+.login-container:hover,
+.form-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6);
+}
+
+.logo {
+    color: var(--accent);
+    font-size: 34px;
+    font-weight: bold;
+    margin-bottom: 25px;
+}
+
+label {
+    display: block;
+    text-align: left;
+    color: var(--text-main);
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-size: 15px;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid var(--text-muted);
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    font-size: 15px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    box-sizing: border-box;
+}
+
+input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 8px rgba(0, 255, 198, 0.4);
+    outline: none;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--primary);
+    color: var(--bg-color);
+    border: none;
+    border-radius: 6px;
+    margin-top: 25px;
+    font-size: 17px;
+    font-weight: bold;
+    transition: background 0.3s, transform 0.1s;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: var(--primary-hover);
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+.links,
+.back-home,
+footer {
+    margin-top: 20px;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.links a,
+.back-home {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.links a:hover,
+.back-home:hover {
+    color: var(--primary);
+}
+
+/* Footer específico de Auth */
+body > footer {
+    /* 3. Ajustado para apenas garantir espaçamento, sem empurrar o layout */
+    width: 100%;
+    text-align: center;
+    padding: 20px 0;
+    margin-top: 0; /* Garante que não empurre o card para cima */
+}

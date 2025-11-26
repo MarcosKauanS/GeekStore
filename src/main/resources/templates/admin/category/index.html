@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin - Categorias | GeekStore</title>
+    <link rel="stylesheet" href="/css/admin/base.css">
+    <link rel="stylesheet" href="/css/admin/product.css">
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div>
+            <div class="logo">GeekStore Admin</div>
+            <nav>
+                <a href="/" class="back-to-site"><span>⬅️</span> Voltar ao Site</a>
+                <a th:href="@{/admin/products}">Produtos</a>
+                <a th:href="@{/admin/stocks}">Estoque</a>
+                <a th:href="@{/admin/users}">Usuários</a>
+                <a th:href="@{/admin/orders}">Pedidos</a>
+                <a th:href="@{/admin/categories}" class="active">Categorias</a>
+            </nav>
+        </div>
+        <div class="logout" th:onclick="'window.location.href=\'/logout\''">Sair</div>
+    </aside>
+
+    <main class="main">
+        <h1>Gerenciar Categorias</h1>
+        <button class="btn-add" id="openModal">+ Adicionar Categoria</button>
+        <table>
+            <thead>
+                <tr>
+                    <th class="desktop-only">ID</th>
+                    <th>Nome</th>
+                    <th class="actions-header">Ações</th>
+                    <th class="more-column-header">Ver mais</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="cat : ${categories}">
+                    <td class="desktop-only" th:text="${cat.id}"></td>
+                    <td th:text="${cat.name}"></td>
+                    <td class="actions">
+                        <a href="#" class="edit" th:attr="data-id=${cat.id},data-name=${cat.name}">✏️</a>
+                        <a th:href="@{/admin/categories/delete/{id}(id=${cat.id})}" class="delete">🗑️</a>
+                    </td>
+                    <td class="more-column">
+                        <a href="#" class="view"
+                            th:attr="data-id=${cat.id},data-name=${cat.name},data-delete=@{/admin/categories/delete/{id}(id=${cat.id})}">
+                            👁️ Ver mais
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <span class="close" id="closeModal">×</span>
+            <h2 id="modalTitle">Adicionar Categoria</h2>
+            <form th:action="@{/admin/categories}" method="post" id="categoryForm">
+                <input type="hidden" id="categoryId" name="id" />
+                <label for="categoria-nome">Nome</label>
+                <input type="text" id="categoria-nome" name="name" placeholder="Nome da categoria" required />
+                <button type="submit" class="btn-save">Salvar Categoria</button>
+                <button type="button" class="btn-cancel" id="cancelModal">Cancelar</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="viewModalOverlay">
+        <div class="modal">
+            <span class="close" id="closeViewModal">×</span>
+            <h2>Detalhes da Categoria</h2>
+            <label>ID</label>
+            <p id="viewId" class="view-text"></p>
+            <label>Nome</label>
+            <p id="viewName" class="view-text"></p>
+            <div class="modal-actions">
+                <button id="btnViewEdit" class="btn-action edit">✏️ Editar</button>
+                <a id="btnViewDelete" href="#" class="btn-action delete">🗑️ Remover</a>
+            </div>
+            <button type="button" class="btn-cancel" id="closeViewButton" style="margin-top: 15px;">Fechar</button>
+        </div>
+    </div>
+
+    <script src="/js/admin/modal/common.js"></script>
+    <script src="/js/admin/modal/category.js"></script>
+</body>
+
+</html>

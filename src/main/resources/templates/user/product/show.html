@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GeekStore - Detalhes do Produto</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/css/user/common.css" />
+  <link rel="stylesheet" href="/css/user/product/show.css" />
+</head>
+
+<body>
+  <!-- ===== NAVBAR ===== -->
+  <header>
+    <div class="logo"><i class="fa-solid fa-gamepad"></i> GeekStore</div>
+    <div class="nav-toggle"><i class="fa-solid fa-bars"></i></div>
+    <nav>
+      <ul>
+        <li><a th:href="@{/}">Início</a></li>
+        <li><a th:href="@{/cart}"><i class="fa-solid fa-cart-shopping"></i> Carrinho</a></li>
+        <li th:if="${user != null}"><a th:href="@{/profile}">Perfil</a></li>
+        <li th:if="${user != null}"><a th:href="@{/logout}">Sair</a></li>
+        <li th:if="${user != null and user.role == 'ADMIN'}"><a th:href="@{/admin/products}">Painel Admin</a></li>
+        <li th:if="${user == null}"><a th:href="@{/login}">Entrar</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="product-show">
+      <div class="product-images">
+        <img th:src="@{/{filename}(filename=${product.imageUrl})}" th:alt="${product.name}" class="main-img" id="mainImage" />
+      </div>
+
+      <div class="product-details">
+        <h1 th:text="${product.name}">Nome do Produto</h1>
+
+        <!-- Categoria -->
+        <p class="product-category" th:text="${product.category?.name} ?: 'Sem categoria'">Categoria</p>
+
+        <p class="description" th:text="${product.description}">Descrição do produto</p>
+        <span class="price" th:text="'R$ ' + ${product.price}">R$ 0,00</span>
+
+        <form th:action="@{/cart/add}" method="post" class="cart-action">
+          <input type="hidden" name="productId" th:value="${product.id}" />
+          <input type="number" name="quantity" value="1" min="1" />
+          <button type="submit" class="add-to-cart">Adicionar ao Carrinho</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer>© 2025 GeekStore — Todos os direitos reservados.</footer>
+
+  <script src="/js/user/product/nav-toggle.js"></script>
+</body>
+
+</html>

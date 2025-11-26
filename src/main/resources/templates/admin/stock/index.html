@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin - Estoque | GeekStore</title>
+  <link rel="stylesheet" href="/css/admin/base.css">
+  <link rel="stylesheet" href="/css/admin/stock.css">
+</head>
+
+<body>
+  <aside class="sidebar">
+    <div>
+      <div class="logo">GeekStore Admin</div>
+      <nav>
+        <a href="/" class="back-to-site">
+          <span>⬅️</span> Voltar ao Site
+        </a>
+
+        <a th:href="@{/admin/products}">Produtos</a>
+        <a th:href="@{/admin/stocks}" class="active">Estoque</a>
+        <a th:href="@{/admin/users}">Usuários</a>
+        <a th:href="@{/admin/orders}">Pedidos</a>
+        <a th:href="@{/admin/categories}">Categorias</a>
+      </nav>
+    </div>
+    <div class="logout" th:onclick="'window.location.href=\'/logout\''">Sair</div>
+  </aside>
+
+  <main class="main">
+    <h1>Controle de Estoque</h1>
+
+    <button class="btn-add" id="openModal">+ Adicionar Estoque</button>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Produto</th>
+
+          <th class="desktop-only">Imagem</th>
+          <th class="desktop-only">Quantidade</th>
+
+          <th class="actions-header">Ações</th>
+          <th class="more-column-header">Ver mais</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="stock : ${stocks}">
+          <td th:text="${stock.product.name}">Produto</td>
+
+          <td class="desktop-only">
+            <img th:src="@{/{filename}(filename=${stock.product.imageUrl})}" th:alt="${stock.product.name}" />
+          </td>
+          <td class="desktop-only" th:text="${stock.quantity}">0</td>
+
+          <td class="actions">
+            <a href="#" class="edit"
+              th:attr="data-id=${stock.id},data-product=${stock.product.id},data-quantity=${stock.quantity}">✏️</a>
+            <a th:href="@{/admin/stocks/delete/{id}(id=${stock.id})}" class="delete">🗑️</a>
+          </td>
+
+          <td class="more-column">
+            <a href="#" class="view" th:attr="data-id=${stock.id},
+                                    data-product-id=${stock.product.id},
+                                    data-product-name=${stock.product.name},
+                                    data-quantity=${stock.quantity},
+                                    data-delete=@{/admin/stocks/delete/{id}(id=${stock.id})}">
+              👁️ Ver mais
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </main>
+
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <span class="close" id="closeModal">×</span>
+      <h2 id="modalTitle">Adicionar Estoque</h2>
+
+      <form th:action="@{/admin/stocks}" method="post" id="stockForm">
+        <input type="hidden" id="stockId" name="id" />
+
+        <label for="product">Produto</label>
+        <select id="product" name="product.id" required>
+          <option value="">Selecione o produto</option>
+          <option th:each="product : ${products}" th:value="${product.id}" th:text="${product.name}"></option>
+        </select>
+
+        <label for="quantity">Quantidade</label>
+        <input type="number" id="quantity" name="quantity" placeholder="0" min="0" required />
+
+        <button type="submit" class="btn-save">Salvar</button>
+        <button type="button" class="btn-cancel" id="cancelModal">
+          Cancelar
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="viewModalOverlay">
+    <div class="modal">
+      <span class="close" id="closeViewModal">×</span>
+      <h2>Detalhes de Estoque</h2>
+
+      <label>ID Estoque</label>
+      <p id="viewId" class="view-text"></p>
+
+      <label>Produto</label>
+      <p id="viewProductName" class="view-text"></p>
+
+      <label>Quantidade</label>
+      <p id="viewQuantity" class="view-text"></p>
+
+      <div class="modal-actions">
+        <button id="btnViewEdit" class="btn-action edit">✏️ Editar</button>
+        <a id="btnViewDelete" href="#" class="btn-action delete">🗑️ Remover</a>
+      </div>
+
+      <button type="button" class="btn-cancel" id="closeViewButton" style="margin-top: 15px;">Fechar</button>
+    </div>
+  </div>
+
+  <script src="/js/admin/modal/common.js"></script>
+  <script src="/js/admin/modal/stock.js"></script>
+</body>
+
+</html>
