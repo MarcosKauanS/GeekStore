@@ -1,144 +1,192 @@
-.logo {
-    color: #6c63ff;
-    font-size: 28px;
-    font-weight: bold;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
+/* Container Geral */
 .container {
-    max-width: 1000px;
-    margin: 50px auto;
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 30px;
+    max-width: 1200px;
+    margin: 40px auto;
     padding: 0 20px;
+    min-height: 60vh;
 }
 
+/* Título Principal */
 h1 {
-    grid-column: 1 / -1;
     text-align: center;
-    color: #6c63ff;
+    color: var(--primary);
+    /* Sucesso = Verde Neon */
     margin-bottom: 30px;
-    font-size: 34px;
+    font-size: clamp(28px, 4vw, 36px);
 }
 
+h1 i {
+    margin-right: 10px;
+}
+
+/* Mensagem de Destaque */
 .confirmation-message {
-    grid-column: 1 / -1;
     text-align: center;
-    background-color: #2e2e38;
-    padding: 25px;
+    background-color: var(--card-bg);
+    padding: 30px;
     border-radius: 16px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-    margin-bottom: 30px;
+    box-shadow: var(--shadow);
+    margin-bottom: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .confirmation-message h2 {
-    color: #00ffc6;
-    margin-bottom: 15px;
+    color: var(--text-main);
+    margin-bottom: 10px;
 }
 
 .confirmation-message p {
-    color: #bfbfbf;
+    color: var(--text-muted);
     font-size: 16px;
 }
 
-.order-items {
-    background-color: #2e2e38;
-    border-radius: 16px;
-    padding: 25px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+/* Layout Grid (Igual Cart e Show) */
+.confirmation-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+    align-items: start;
 }
 
+/* ===== LISTA DE ITENS ===== */
+.order-items {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.order-items h3 {
+    color: var(--accent);
+    margin-bottom: 10px;
+    font-size: 20px;
+}
+
+/* Item Card */
 .item {
+    background-color: #24242a;
+    /* Fundo item padrão */
+    border-radius: 12px;
+    padding: 20px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 15px;
-    margin-bottom: 20px;
-    border-radius: 12px;
-    background-color: #24242a;
+    gap: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.item img {
+.item-img-wrapper img {
     width: 80px;
-    border-radius: 10px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    background-color: #000;
 }
 
 .item-info {
     flex: 1;
-    margin-left: 20px;
 }
 
 .item-info h3 {
     font-size: 18px;
-    color: #f5f5f5;
+    margin-bottom: 5px;
+    color: var(--text-main);
 }
 
-.item-info p {
-    color: #bfbfbf;
-    font-size: 15px;
+.item-meta {
+    display: flex;
+    gap: 15px;
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 5px;
 }
 
+.item-meta strong {
+    color: var(--text-main);
+}
+
+.subtotal-item {
+    color: var(--primary);
+    font-weight: bold;
+    font-size: 16px;
+}
+
+/* ===== RESUMO (STICKY - Padrão Cart) ===== */
 .summary {
-    background: linear-gradient(145deg, #2e2e38, #1a1a1d);
-    border: 1px solid #6c63ff;
-    border-radius: 16px;
-    padding: 30px;
-    box-shadow: 0 6px 18px rgba(108, 99, 255, 0.25);
     position: sticky;
-    top: 100px;
-    height: fit-content;
+    top: 110px;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    /* Estilo Visual Cart 1 */
+    background: linear-gradient(145deg, var(--card-bg), var(--bg-color));
+    border: 1px solid var(--accent);
 }
 
 .summary h2 {
     text-align: center;
     margin-bottom: 20px;
-    color: #00ffc6;
+    color: var(--primary);
+    font-size: 22px;
 }
 
-.summary p {
-    font-size: 18px;
-    margin: 10px 0;
+.summary-rows p {
     display: flex;
     justify-content: space-between;
+    margin-bottom: 10px;
+    color: var(--text-muted);
+    font-size: 16px;
 }
 
-.summary p span {
+.summary-rows p span:not([style]) {
     font-weight: bold;
-    color: #6c63ff;
-}
-
-.btn-home {
-    margin-top: 25px;
-    width: 100%;
-    background-color: #00ffc6;
-    color: #1a1a1d;
-    font-weight: bold;
-    font-size: 18px;
-    padding: 14px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    text-align: center;
-    display: inline-block;
-    text-decoration: none;
-    transition: background 0.3s, transform 0.1s;
-}
-
-.btn-home:hover {
-    background-color: #00e0b0;
+    color: var(--accent);
 }
 
 .summary hr {
     border: 0;
     border-top: 1px solid var(--text-muted);
-    /* Usa a variável global */
     opacity: 0.2;
-    margin: 15px 0;
+    margin: 20px 0;
 }
 
+.summary .total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+/* Botão Voltar */
+.btn-home {
+    margin-top: 25px;
+    width: 100%;
+    background-color: var(--primary);
+    color: var(--bg-color);
+    font-weight: bold;
+    font-size: 16px;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.btn-home:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(0, 255, 198, 0.3);
+}
+
+/* ===== RESPONSIVIDADE ===== */
 @media (max-width: 900px) {
-    .container {
+    .confirmation-layout {
         grid-template-columns: 1fr;
     }
 
@@ -146,10 +194,17 @@ h1 {
         position: static;
         margin-top: 30px;
     }
+}
 
+@media (max-width: 600px) {
     .item {
         flex-direction: column;
         align-items: flex-start;
         text-align: left;
+    }
+
+    .item-img-wrapper img {
+        width: 60px;
+        height: 60px;
     }
 }
