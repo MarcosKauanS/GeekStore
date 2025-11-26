@@ -1,6 +1,6 @@
 package com.geekstore.geekstore.config;
 
-import com.geekstore.geekstore.modules.auth.service.UserSecurityService;
+import com.geekstore.geekstore.modules.user.profile.service.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,49 +13,45 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
-        private final UserSecurityService userSecurityService;
+    private final UserDetailsServiceImpl userDetailsService;
 
-        public SecurityConfig(UserSecurityService userSecurityService) {
-                this.userSecurityService = userSecurityService;
-        }
+    public SecurityConfig(UserDetailsServiceImpl userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
 
-        @Bean
-        public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-                http
-                                .authorizeHttpRequests(auth -> auth
-                                                // rotas públicas
-                                                .requestMatchers("/", "/home", "/login", "/register", "/css/**",
-                                                                "/js/**")
-                                                .permitAll()
-                                                // admin protegido
-                                                .requestMatchers("/admin/**").hasRole("ADMIN")
-                                                // checkout protegido: precisa estar logado
-                                                .requestMatchers("/cart/checkout").authenticated()
-                                                // qualquer outra rota é acessível
-                                                .anyRequest().permitAll())
-                                .formLogin(form -> form
-                                                .loginPage("/login")
-                                                .defaultSuccessUrl("/", true)
-                                                .permitAll())
-                                .logout(logout -> logout
-                                                .logoutUrl("/logout")
-                                                .logoutSuccessUrl("/")
-                                                .permitAll())
-                                .userDetailsService(userSecurityService)
-                                .csrf(csrf -> csrf.disable()); // desativado apenas para testes
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-                return http.build();
-        }
+        http
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/", "/home", "/login", "/register", "/css/**", "/js/**").permitAll()
+                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/cart/checkout").authenticated()
+                .anyRequest().permitAll()
+            )
+            .formLogin(form -> form
+                .loginPage("/login")
+                .defaultSuccessUrl("/", true)
+                .permitAll()
+            )
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/")
+                .permitAll()
+            )
+            .userDetailsService(userDetailsService)
+            .csrf(csrf -> csrf.disable());
 
-        // Password encoder
-        @Bean
-        public PasswordEncoder passwordEncoder() {
-                return new BCryptPasswordEncoder();
-        }
+        return http.build();
+    }
 
-        // AuthenticationManager necessário para login programático
-        @Bean
-        public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-                return config.getAuthenticationManager();
-        }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
 }
