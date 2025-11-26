@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8" />
+
+    <title>Meu Perfil</title>
+
+    <link rel="stylesheet" th:href="@{/css/user/profile/profile.css}" href="/css/user/profile/profile.css" />
+
+</head>
+
+<body>
+
+
+
+    <div class="profile-container">
+
+
+
+        <div class="profile-title">Meu Perfil</div>
+
+
+
+        <div th:if="${successMessage}" class="alert-message">
+
+            <div class="btn-outline" th:text="${successMessage}"></div>
+
+        </div>
+
+        <div th:if="${passwordSuccessMessage}" class="alert-message">
+
+            <div class="btn-outline" th:text="${passwordSuccessMessage}"></div>
+
+        </div>
+
+        <div th:if="${passwordErrorMessage}" class="alert-message">
+
+            <div class="btn-danger" th:text="${passwordErrorMessage}"></div>
+
+        </div>
+
+
+
+        <div class="profile-menu">
+
+            <a th:href="@{/profile}" class="active">Resumo</a>
+
+            <a th:href="@{/profile(fragment='edit')}">Editar</a>
+
+            <a th:href="@{/profile(fragment='password')}">Senha</a>
+
+            <a th:href="@{/profile(fragment='orders')}">Histórico</a>
+
+        </div>
+
+
+
+        <a th:href="@{/}" class="btn-back">Voltar para o Início</a>
+
+
+
+        <section id="summary" class="profile-card">
+
+            <h3 class="profile-section-title">Informações</h3>
+
+            <p><strong>Nome:</strong> <span th:text="${user.name}"></span></p>
+
+            <p><strong>Email:</strong> <span th:text="${user.email}"></span></p>
+
+            <p><strong>Cargo/Role:</strong> <span th:text="${user.role}"></span></p>
+
+        </section>
+
+
+
+        <section id="edit" class="profile-card">
+
+            <h3 class="profile-section-title">Editar Perfil</h3>
+
+            <form th:action="@{/profile/update}" method="post" class="profile-form" th:object="${profileUpdateDTO}">
+
+                <label for="name">Nome</label>
+
+                <input type="text" id="name" name="name" th:value="${user.name}" required />
+
+                <label for="email">Email</label>
+
+                <input type="email" id="email" name="email" th:value="${user.email}" required />
+
+                <button type="submit" class="btn-primary">Salvar alterações</button>
+
+            </form>
+
+        </section>
+
+
+
+        <section id="password" class="profile-card">
+
+            <h3 class="profile-section-title">Alterar Senha</h3>
+
+            <form th:action="@{/profile/password}" method="post" class="profile-form" th:object="${passwordUpdateDTO}">
+
+                <label for="currentPassword">Senha atual</label>
+
+                <input type="password" id="currentPassword" name="currentPassword" required />
+
+                <label for="newPassword">Nova senha</label>
+
+                <input type="password" id="newPassword" name="newPassword" required />
+
+                <label for="confirmPassword">Confirmar nova senha</label>
+
+                <input type="password" id="confirmPassword" name="confirmPassword" required />
+
+                <button type="submit" class="btn-primary">Alterar senha</button>
+
+            </form>
+
+        </section>
+
+
+
+        <section id="orders" class="profile-card">
+
+            <h3 class="profile-section-title">Histórico de Compras</h3>
+
+            <div class="order-table-wrapper">
+
+                <table class="order-history-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Pedido</th>
+
+                            <th>Data</th>
+
+                            <th>Total</th>
+
+                            <th>Status</th>
+
+                            <th>Itens</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr th:each="order : ${orders}">
+
+                            <td th:text="'#' + ${order.id}"></td>
+
+                            <td th:text="${#temporals.format(order.orderDate, 'dd/MM/yyyy HH:mm')}"></td>
+
+                            <td th:text="${order.totalAmount}"></td>
+
+                            <td>
+
+                                <span th:switch="${order.status}">
+
+                                    <span th:case="'PENDING'" th:class="'order-status status-pending'"
+                                        th:text="${order.status}"></span>
+
+                                    <span th:case="'COMPLETED'" th:class="'order-status status-completed'"
+                                        th:text="${order.status}"></span>
+
+                                    <span th:case="*" th:class="'order-status status-cancelled'"
+                                        th:text="${order.status}"></span>
+
+                                </span>
+
+                            </td>
+
+                            <td th:text="${order.items != null ? order.items.size() : 0}"></td>
+
+                        </tr>
+
+                        <tr th:if="${orders == null or #lists.isEmpty(orders)}">
+
+                            <td colspan="5">Você não possui pedidos.</td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+
+    </div>
+
+
+
+</body>
+
+</html>
