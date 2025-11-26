@@ -12,9 +12,12 @@
 </head>
 
 <body>
-  <!-- ===== NAVBAR ===== -->
   <header>
-    <div class="logo"><i class="fa-solid fa-gamepad"></i> GeekStore</div>
+    <div class="logo">
+      <a th:href="@{/}" style="text-decoration: none; color: inherit;">
+        <i class="fa-solid fa-gamepad"></i> GeekStore
+      </a>
+    </div>
 
     <form th:action="@{/products}" method="get" class="search-bar">
       <input type="text" name="keyword" placeholder="Buscar produtos..." th:value="${keyword}" aria-label="Buscar" />
@@ -22,6 +25,7 @@
     </form>
 
     <div class="nav-toggle"><i class="fa-solid fa-bars"></i></div>
+
     <nav>
       <ul>
         <li><a th:href="@{/}">Início</a></li>
@@ -35,32 +39,71 @@
   </header>
 
   <main>
+    <div class="breadcrumb">
+      <a th:href="@{/}">Início</a>
+      <i class="fa-solid fa-chevron-right"></i>
+      <span th:text="${product.category?.name} ?: 'Geral'">Categoria</span>
+      <i class="fa-solid fa-chevron-right"></i>
+      <span class="current" th:text="${product.name}">Produto</span>
+    </div>
+
     <section class="product-show">
-      <div class="product-images">
-        <img th:src="@{/{filename}(filename=${product.imageUrl})}" th:alt="${product.name}" class="main-img"
-          id="mainImage" />
+      <div class="product-image-container">
+        <div class="img-wrapper">
+          <img th:src="@{/{filename}(filename=${product.imageUrl})}" th:alt="${product.name}" id="mainImage" />
+        </div>
       </div>
 
       <div class="product-details">
-        <h1 th:text="${product.name}">Nome do Produto</h1>
 
-        <!-- Categoria -->
-        <p class="product-category" th:text="${product.category?.name} ?: 'Sem categoria'">Categoria</p>
+        <div class="header-details">
+          <span class="badge" th:text="${product.category?.name} ?: 'Sem categoria'">Categoria</span>
+          <h1 th:text="${product.name}">Nome do Produto</h1>
+        </div>
 
-        <p class="description" th:text="${product.description}">Descrição do produto</p>
-        <span class="price" th:text="'R$ ' + ${product.price}">R$ 0,00</span>
+        <div class="price-buy-box">
+          <div class="price-info">
+            <span class="price-label">Preço à vista:</span>
+            <span class="price-value" th:text="'R$ ' + ${product.price}">R$ 0,00</span>
+            <span class="installments">
+              <i class="fa-regular fa-credit-card"></i>
+              em até 12x de <span th:text="'R$ ' + ${#numbers.formatDecimal(product.price/12, 1, 2)}"></span> sem juros
+            </span>
+          </div>
 
-        <form th:action="@{/cart/add}" method="post" class="cart-action">
-          <input type="hidden" name="productId" th:value="${product.id}" />
-          <input type="number" name="quantity" value="1" min="1" />
-          <button type="submit" class="add-to-cart">Adicionar ao Carrinho</button>
-        </form>
+          <form th:action="@{/cart/add}" method="post" class="add-to-cart-form">
+            <input type="hidden" name="productId" th:value="${product.id}" />
+
+            <div class="actions-row">
+              <div class="qty-selector">
+                <button type="button" onclick="this.nextElementSibling.stepDown()">
+                  <i class="fa-solid fa-minus"></i>
+                </button>
+
+                <input type="number" name="quantity" value="1" min="1" readonly>
+
+                <button type="button" onclick="this.previousElementSibling.stepUp()">
+                  <i class="fa-solid fa-plus"></i>
+                </button>
+              </div>
+
+              <button type="submit" class="btn-add">
+                <i class="fa-solid fa-cart-plus"></i> Adicionar
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div class="description-box">
+          <h3><i class="fa-solid fa-align-left"></i> Sobre este item</h3>
+          <p th:text="${product.description}">Descrição detalhada do produto...</p>
+        </div>
+
       </div>
     </section>
   </main>
 
-  <footer>© 2025 GeekStore — Todos os direitos reservados.</footer>
-
+  <footer>&copy; 2025 GeekStore — Todos os direitos reservados.</footer>
   <script src="/js/user/product/nav-toggle.js"></script>
 </body>
 

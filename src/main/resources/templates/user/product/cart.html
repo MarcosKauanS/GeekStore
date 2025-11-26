@@ -12,9 +12,12 @@
 </head>
 
 <body>
-  <!-- ===== NAVBAR ===== -->
   <header>
-    <div class="logo"><i class="fa-solid fa-gamepad"></i> GeekStore</div>
+    <div class="logo">
+      <a th:href="@{/}" style="text-decoration: none; color: inherit;">
+        <i class="fa-solid fa-gamepad"></i> GeekStore
+      </a>
+    </div>
 
     <form th:action="@{/products}" method="get" class="search-bar">
       <input type="text" name="keyword" placeholder="Buscar produtos..." th:value="${keyword}" aria-label="Buscar" />
@@ -22,6 +25,7 @@
     </form>
 
     <div class="nav-toggle"><i class="fa-solid fa-bars"></i></div>
+
     <nav>
       <ul>
         <li><a th:href="@{/}">Início</a></li>
@@ -36,68 +40,88 @@
 
   <main>
     <div class="container">
-      <h1>🛒 Meu Carrinho</h1>
+      <h1><i class="fa-solid fa-basket-shopping"></i> Meu Carrinho</h1>
 
       <div th:if="${#lists.isEmpty(cartItems)}" class="empty-cart-msg">
-        🛒 Seu carrinho está vazio!
+        <i class="fa-solid fa-ghost" style="font-size: 40px; margin-bottom: 10px;"></i><br>
+        Seu carrinho está vazio!
+        <br>
+        <a th:href="@{/}" class="btn-back">Voltar as compras</a>
       </div>
 
-      <div class="cart-items" th:unless="${#lists.isEmpty(cartItems)}">
-        <div class="item" th:each="item : ${cartItems}">
-          <img th:src="@{/{filename}(filename=${item.product.imageUrl})}" th:alt="${item.product.name}" />
-          <div class="item-info">
-            <h3 th:text="${item.product.name}">Nome do Produto</h3>
+      <div class="cart-layout" th:unless="${#lists.isEmpty(cartItems)}">
 
-            <!-- Categoria -->
-            <p class="product-category" th:text="${item.product.category?.name} ?: 'Sem categoria'">Categoria</p>
+        <div class="cart-items">
+          <div class="item" th:each="item : ${cartItems}">
+            <div class="item-img-wrapper">
+              <img th:src="@{/{filename}(filename=${item.product.imageUrl})}" th:alt="${item.product.name}" />
+            </div>
 
-            <p th:text="'R$ ' + ${item.product.price}">R$ 0,00</p>
+            <div class="item-info">
+              <p class="product-category" th:text="${item.product.category?.name} ?: 'Sem categoria'">Categoria</p>
+              <h3 th:text="${item.product.name}">Nome do Produto</h3>
+              <p class="price" th:text="'R$ ' + ${item.product.price}">R$ 0,00</p>
+            </div>
+
+            <div class="item-actions">
+              <form th:action="@{/cart/update}" method="post" class="quantity-control-form">
+                <input type="hidden" name="productId" th:value="${item.product.id}" />
+
+                <div class="qty-selector-sm">
+                  <button type="button" onclick="this.nextElementSibling.stepDown()">
+                    <i class="fa-solid fa-minus"></i>
+                  </button>
+
+                  <input type="number" name="quantity" th:value="${item.quantity}" min="1" readonly />
+
+                  <button type="button" onclick="this.previousElementSibling.stepUp()">
+                    <i class="fa-solid fa-plus"></i>
+                  </button>
+                </div>
+
+                <button type="submit" class="icon-btn update-btn" title="Confirmar Quantidade">
+                  <i class="fa-solid fa-check"></i>
+                </button>
+              </form>
+
+              <form th:action="@{/cart/remove}" method="post">
+                <input type="hidden" name="productId" th:value="${item.product.id}" />
+                <button type="submit" class="icon-btn remove-btn" title="Remover item">
+                  <i class="fa-solid fa-trash-can"></i> Remover
+                </button>
+              </form>
+            </div>
           </div>
-          <div class="item-actions">
-            <form th:action="@{/cart/add}" method="post" class="update-quantity-form">
-              <input type="hidden" name="productId" th:value="${item.product.id}" />
-              <input type="number" name="quantity" th:value="${item.quantity}" min="1" class="quantity-input" />
-              <button type="submit" class="update-btn" title="Atualizar quantidade">
-                <i class="fa-solid fa-arrows-rotate"></i>
-              </button>
-            </form>
+        </div>
 
-            <form th:action="@{/cart/remove}" method="post">
-              <input type="hidden" name="productId" th:value="${item.product.id}" />
-              <button type="submit" class="remove-btn" title="Remover item">
-                <i class="fa-solid fa-trash"></i>
-              </button>
-            </form>
+        <div class="summary">
+          <h2>Resumo do Pedido</h2>
+
+          <div th:if="${errorMessage != null}" class="alert alert-error">
+            <i class="fa-solid fa-triangle-exclamation"></i> <span th:text="${errorMessage}"></span>
           </div>
+          <div th:if="${successMessage != null}" class="alert alert-success">
+            <i class="fa-solid fa-circle-check"></i> <span th:text="${successMessage}"></span>
+          </div>
+
+          <div class="summary-rows">
+            <p>Subtotal: <span th:text="'R$ ' + ${subtotal}">R$ 0,00</span></p>
+            <p>Frete: <span style="color: var(--primary);">Grátis</span></p>
+          </div>
+          <hr />
+          <p class="total">Total: <span th:text="'R$ ' + ${total}">R$ 0,00</span></p>
+
+          <form th:action="@{/cart/checkout}" method="get">
+            <button type="submit" class="btn-checkout">Finalizar Compra <i class="fa-solid fa-arrow-right"></i></button>
+          </form>
+          <a th:href="@{/}" class="continue-shopping">Continuar comprando</a>
         </div>
 
-        <div th:if="${errorMessage != null}" class="alert alert-error">
-          <i class="fa-solid fa-triangle-exclamation"></i>
-          <span th:text="${errorMessage}"></span>
-        </div>
-
-        <div th:if="${successMessage != null}" class="alert alert-success">
-          <i class="fa-solid fa-circle-check"></i>
-          <span th:text="${successMessage}"></span>
-        </div>
-      </div>
-
-      <div class="summary" th:unless="${#lists.isEmpty(cartItems)}">
-        <h2>Resumo do Pedido</h2>
-        <p>Subtotal: <span th:text="'R$ ' + ${subtotal}">R$ 0,00</span></p>
-        <p>Frete: <span>Grátis</span></p>
-        <hr />
-        <p>Total: <span th:text="'R$ ' + ${total}">R$ 0,00</span></p>
-
-        <form th:action="@{/cart/checkout}" method="get">
-          <button type="submit" class="btn-finalizar">Finalizar Compra</button>
-        </form>
       </div>
     </div>
   </main>
 
   <footer>&copy; 2025 GeekStore — Todos os direitos reservados.</footer>
-
   <script src="/js/user/product/nav-toggle.js"></script>
 </body>
 

@@ -13,7 +13,11 @@
 
 <body>
   <header>
-    <div class="logo"><i class="fa-solid fa-gamepad"></i> GeekStore</div>
+    <div class="logo">
+      <a th:href="@{/}" style="text-decoration: none; color: inherit;">
+        <i class="fa-solid fa-gamepad"></i> GeekStore
+      </a>
+    </div>
 
     <form th:action="@{/products}" method="get" class="search-bar">
       <input type="text" name="keyword" placeholder="Buscar produtos..." th:value="${keyword}" aria-label="Buscar" />
@@ -21,67 +25,78 @@
     </form>
 
     <div class="nav-toggle"><i class="fa-solid fa-bars"></i></div>
+
     <nav>
       <ul>
         <li><a th:href="@{/}">Início</a></li>
         <li><a th:href="@{/cart}"><i class="fa-solid fa-cart-shopping"></i> Carrinho</a></li>
-
         <li th:if="${user != null}"><a th:href="@{/profile}">Perfil</a></li>
         <li th:if="${user != null}"><a th:href="@{/logout}">Sair</a></li>
         <li th:if="${user != null and user.role == 'ADMIN'}"><a th:href="@{/admin/products}">Painel Admin</a></li>
-
         <li th:if="${user == null}"><a th:href="@{/login}">Entrar</a></li>
       </ul>
     </nav>
   </header>
 
-  <div class="container">
-    <h1>✅ Pedido Confirmado</h1>
+  <main>
+    <div class="container">
+      <h1><i class="fa-solid fa-circle-check"></i> Pedido Confirmado</h1>
 
-    <div class="confirmation-message">
-      <h2>Obrigado pela sua compra!</h2>
-      <p>Seu pedido foi realizado com sucesso.</p>
-      <p>Em breve você receberá um e-mail com os detalhes do seu pedido.</p>
-    </div>
+      <div class="confirmation-message">
+        <h2>Obrigado pela sua compra!</h2>
+        <p>Seu pedido foi realizado com sucesso.</p>
+        <p>Em breve você receberá um e-mail com os detalhes do seu pedido.</p>
+      </div>
 
-    <div class="order-items">
-      <div class="item" th:each="item : ${order.items}">
-        <img th:src="@{/{filename}(filename=${item.product.imageUrl})}" th:alt="${item.product.name}" />
-        <div class="item-info">
-          <h3 th:text="${item.product.name}">Produto</h3>
+      <div class="confirmation-layout">
 
-          <p class="product-category" th:text="${item.product.category?.name} ?: 'Sem categoria'">Categoria</p>
+        <div class="order-items">
+          <h3>Itens do Pedido</h3>
+          <div class="item" th:each="item : ${order.items}">
+            <div class="item-img-wrapper">
+              <img th:src="@{/{filename}(filename=${item.product.imageUrl})}" th:alt="${item.product.name}" />
+            </div>
 
-          <p>Quantidade: <span th:text="${item.quantity}">0</span></p>
-          <p>
-            Preço unitário:
-            <span th:text="'R$ ' + ${item.unitPrice}">R$ 0,00</span>
-          </p>
-          <p>
-            Total: <span th:text="'R$ ' + ${item.subtotal}">R$ 0,00</span>
-          </p>
+            <div class="item-info">
+              <p class="product-category" th:text="${item.product.category?.name} ?: 'Sem categoria'">Categoria</p>
+              <h3 th:text="${item.product.name}">Produto</h3>
+
+              <div class="item-meta">
+                <span>Qtd: <strong th:text="${item.quantity}">0</strong></span>
+                <span>Unit: <strong th:text="'R$ ' + ${item.unitPrice}">R$ 0,00</strong></span>
+              </div>
+
+              <p class="subtotal-item">
+                Total: <span th:text="'R$ ' + ${item.subtotal}">R$ 0,00</span>
+              </p>
+            </div>
+          </div>
         </div>
+
+        <div class="summary">
+          <h2>Resumo do Pedido</h2>
+
+          <div class="summary-rows">
+            <p>Subtotal: <span th:text="'R$ ' + ${order.totalAmount}">R$ 0,00</span></p>
+            <p>Frete: <span style="color: var(--primary);">Grátis</span></p>
+          </div>
+
+          <hr />
+
+          <p class="total">
+            Total: <span th:text="'R$ ' + ${order.totalAmount}">R$ 0,00</span>
+          </p>
+
+          <a th:href="@{/}" class="btn-home">
+            <i class="fa-solid fa-shop"></i> Voltar à loja
+          </a>
+        </div>
+
       </div>
     </div>
+  </main>
 
-    <div class="summary">
-      <h2>Resumo do Pedido</h2>
-      <p>
-        Subtotal: <span th:text="'R$ ' + ${order.totalAmount}">R$ 0,00</span>
-      </p>
-      <p>Frete: <span>Grátis</span></p>
-
-      <hr />
-
-      <p>
-        Total: <span th:text="'R$ ' + ${order.totalAmount}">R$ 0,00</span>
-      </p>
-      <a th:href="@{/products}" class="btn-home">Voltar à loja</a>
-    </div>
-  </div>
-
-  <footer>© 2025 GeekStore — Todos os direitos reservados.</footer>
-
+  <footer>&copy; 2025 GeekStore — Todos os direitos reservados.</footer>
   <script src="/js/user/product/nav-toggle.js"></script>
 </body>
 

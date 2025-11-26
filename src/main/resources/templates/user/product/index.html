@@ -7,7 +7,6 @@
   <title>GeekStore - Início</title>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-
   <link rel="stylesheet" href="/css/main.css">
   <link rel="stylesheet" href="/css/user/common.css">
   <link rel="stylesheet" href="/css/user/product/index.css">
@@ -32,13 +31,11 @@
       <ul>
         <li><a th:href="@{/}">Início</a></li>
         <li><a th:href="@{/cart}"><i class="fa-solid fa-cart-shopping"></i> Carrinho</a></li>
-
         <li th:if="${user != null}"><a th:href="@{/profile}">Perfil</a></li>
         <li th:if="${user != null}"><a th:href="@{/logout}">Sair</a></li>
         <li th:if="${user != null and user.role == 'ADMIN'}">
-          <a th:href="@{/admin/products}">Painel de Admin</a>
+          <a th:href="@{/admin/products}">Painel Admin</a>
         </li>
-
         <li th:if="${user == null}"><a th:href="@{/login}">Entrar</a></li>
       </ul>
     </nav>
@@ -53,7 +50,9 @@
         universo geek.<br />
         Explore lançamentos e clássicos — tudo com curadoria especializada.
       </p>
-      <button class="btn-explore" onclick="scrollToProducts()">Explorar agora</button>
+      <button class="btn-explore" onclick="document.getElementById('produtos').scrollIntoView({behavior: 'smooth'})">
+        Explorar agora
+      </button>
     </div>
   </section>
 
@@ -70,21 +69,27 @@
 
     <div class="product-card" th:each="product : ${products}">
       <a th:href="@{/products/{id}(id=${product.id})}">
-        <img th:src="@{/{filename}(filename=${product.imageUrl})}" th:alt="${product.name}" />
+        <div class="img-wrapper">
+          <img th:src="@{/{filename}(filename=${product.imageUrl})}" th:alt="${product.name}" />
+        </div>
 
         <p class="product-category" th:text="${product.category?.name} ?: 'Sem categoria'">Categoria</p>
 
         <h3 th:text="${product.name}">Nome do produto</h3>
+
         <p class="product-description" th:text="${product.description}">Descrição do produto</p>
-        <p class="product-price"><strong th:text="'R$ ' + ${product.price}">R$0,00</strong></p>
-        <div class="btn-explore">Comprar</div>
+
+        <p class="product-price" th:text="'R$ ' + ${product.price}">R$ 0,00</p>
+
+        <div class="btn-buy">
+          <i class="fa-solid fa-eye"></i> Ver Detalhes
+        </div>
       </a>
     </div>
   </section>
 
   <footer>&copy; 2025 GeekStore — Todos os direitos reservados.</footer>
 
-  <script src="/js/user/product/index.js"></script>
   <script src="/js/user/product/nav-toggle.js"></script>
 </body>
 

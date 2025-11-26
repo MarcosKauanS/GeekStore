@@ -45,9 +45,9 @@ public class CartController {
     private final ObjectMapper objectMapper;
 
     public CartController(ProductService productService,
-                          StockService stockService,
-                          OrderService orderService,
-                          UserService userService) {
+            StockService stockService,
+            OrderService orderService,
+            UserService userService) {
         this.productService = productService;
         this.stockService = stockService;
         this.orderService = orderService;
@@ -90,7 +90,8 @@ public class CartController {
                 if ("cart".equals(cookie.getName())) {
                     try {
                         String decoded = URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8);
-                        return objectMapper.readValue(decoded, new TypeReference<List<CartItem>>() {});
+                        return objectMapper.readValue(decoded, new TypeReference<List<CartItem>>() {
+                        });
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -108,9 +109,9 @@ public class CartController {
     // ===================== ADICIONAR AO CARRINHO =====================
     @PostMapping("/add")
     public String addToCart(@RequestParam("productId") Long productId,
-                            @RequestParam(value = "quantity", defaultValue = "1") int quantity,
-                            HttpServletRequest request,
-                            HttpServletResponse response) {
+            @RequestParam(value = "quantity", defaultValue = "1") int quantity,
+            HttpServletRequest request,
+            HttpServletResponse response) {
 
         HttpSession session = request.getSession();
         List<CartItem> cart = getCartFromSession(session);
@@ -118,7 +119,7 @@ public class CartController {
         boolean found = false;
         for (CartItem item : cart) {
             if (item.getProductId().equals(productId)) {
-                item.setQuantity(item.getQuantity() + quantity);
+                item.setQuantity(item.getQuantity() + quantity); // Aqui SOMA (correto para adicionar)
                 found = true;
                 break;
             }
@@ -132,18 +133,45 @@ public class CartController {
         return "redirect:/cart";
     }
 
+    // ===================== ATUALIZAR QUANTIDADE (NOVO MÉTODO)
+    // =====================
+    @PostMapping("/update")
+    public String updateCart(@RequestParam("productId") Long productId,
+            @RequestParam("quantity") int quantity,
+            HttpServletRequest request,
+            HttpServletResponse response) {
+
+        // Se quantidade for 0 ou menor, remove o item
+        if (quantity <= 0) {
+            return removeFromCart(productId, request, response);
+        }
+
+        HttpSession session = request.getSession();
+        List<CartItem> cart = getCartFromSession(session);
+
+        for (CartItem item : cart) {
+            if (item.getProductId().equals(productId)) {
+                // Aqui SUBSTITUI o valor (lógica de atualização)
+                item.setQuantity(quantity);
+                break;
+            }
+        }
+
+        syncSessionAndCookie(session, response, cart);
+        return "redirect:/cart";
+    }
+
     // ===================== REMOVER DO CARRINHO =====================
     @PostMapping("/remove")
     public String removeFromCart(@RequestParam("productId") Long productId,
-                                HttpServletRequest request,
-                                HttpServletResponse response) {
+            HttpServletRequest request,
+            HttpServletResponse response) {
 
         HttpSession session = request.getSession();
         List<CartItem> cart = getCartFromSession(session);
 
         cart.removeIf(item -> item.getProductId().equals(productId));
 
-        // Ordem correta: session, response, cart
         syncSessionAndCookie(session, response, cart);
 
         return "redirect:/cart";
@@ -152,7 +180,7 @@ public class CartController {
     // ===================== EXIBIR CARRINHO =====================
     @GetMapping
     public String viewCart(HttpServletRequest request, Model model,
-                           @AuthenticationPrincipal UserDetails userDetails) {
+            @AuthenticationPrincipal UserDetails userDetails) {
         HttpSession session = request.getSession();
         List<CartItem> cart = getCartFromSession(session);
 
@@ -187,7 +215,8 @@ public class CartController {
 
     // ===================== FINALIZAR COMPRA =====================
     @GetMapping("/checkout")
-    public String checkout(HttpServletRequest request, HttpServletResponse response, Model model, @AuthenticationPrincipal UserDetails userDetails) {
+    public String checkout(HttpServletRequest request, HttpServletResponse response, Model model,
+            @AuthenticationPrincipal UserDetails userDetails) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !auth.isAuthenticated() || auth.getPrincipal().equals("anonymousUser")) {
             return "redirect:/login";
@@ -218,7 +247,8 @@ public class CartController {
                         .orElseThrow(() -> new IllegalArgumentException("Produto sem estoque: " + product.getName()));
 
                 if (item.getQuantity() > stock.getQuantity()) {
-                    throw new IllegalArgumentException("Quantidade solicitada maior que o estoque disponível para: " + product.getName());
+                    throw new IllegalArgumentException(
+                            "Quantidade solicitada maior que o estoque disponível para: " + product.getName());
                 }
 
                 // Criar item de pedido
