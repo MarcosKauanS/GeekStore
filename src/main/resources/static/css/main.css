@@ -1,5 +1,9 @@
 /* ===================== */
-/*       VARIÁVEIS       */
+/* 🧩 MAIN.CSS - GeekStore */
+/* ===================== */
+
+/* ===================== */
+/* VARIÁVEIS       */
 /* ===================== */
 :root {
     --bg-color: #1a1a1d;
@@ -15,7 +19,7 @@
 }
 
 /* ===================== */
-/*      RESET GLOBAL     */
+/* RESET GLOBAL      */
 /* ===================== */
 * {
     margin: 0;
@@ -49,7 +53,7 @@ button {
 }
 
 /* ===================== */
-/*       HEADER/NAV      */
+/* HEADER/NAV       */
 /* ===================== */
 header {
     background-color: var(--card-bg);
@@ -57,11 +61,14 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    /* mantém o logo e o botão alinhados verticalmente */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     position: sticky;
     top: 0;
     z-index: 100;
+
+    /* Permite que a busca desça no mobile */
+    flex-wrap: wrap;
+    gap: 20px;
 }
 
 .logo {
@@ -69,6 +76,8 @@ header {
     font-size: 28px;
     font-weight: 800;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    /* Garante que o logo fique na esquerda sem empurrar o resto */
+    flex-shrink: 0;
 }
 
 nav {
@@ -86,35 +95,64 @@ nav a {
     font-weight: 500;
 }
 
-/* MENU MOBILE */
-/* BOTÃO MOBILE */
+/* ===================== */
+/* RESPONSIVIDADE   */
+/* ===================== */
 .nav-toggle {
     display: none;
     font-size: 26px;
     cursor: pointer;
     color: var(--text-main);
     margin-left: auto;
-    /* garante que fique à direita */
 }
 
 @media (max-width: 768px) {
+
+    /* 1. LOGO (Esquerda) */
+    .logo {
+        order: 1;
+    }
+
+    /* 2. BOTÃO MENU (Direita) */
     .nav-toggle {
         display: block;
+        order: 2;
+        margin-left: auto;
+    }
+
+    /* 3. BARRA DE PESQUISA (Linha de Baixo - Estilo Navbar 2) */
+    .search-bar {
+        order: 3;
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+    }
+
+    /* 4. MENU DROPDOWN (Estilo Navbar 1 - Caixinha à direita) */
+    nav {
+        order: 4;
+        /* Não definimos width 100% aqui para não atrapalhar o posicionamento absoluto */
     }
 
     nav ul {
         flex-direction: column;
         position: absolute;
-        top: 65px;
-        /* abaixo do header */
+        /* Top 100% cola ele logo abaixo do header expandido */
+        top: 100%;
+
+        /* Alinhado à direita (Estilo Navbar 1) */
         right: 0;
-        /* alinhado à direita do header */
-        background-color: var(--card-bg);
+
+        /* Largura fixa de caixinha (Estilo Navbar 1) */
         width: 200px;
-        border-radius: 10px;
+
+        background-color: var(--card-bg);
+        border-radius: 0 0 0 10px;
+        /* Arredonda canto inferior esquerdo */
         padding: 15px;
         display: none;
         box-shadow: var(--shadow);
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     nav ul.active {
@@ -122,16 +160,8 @@ nav a {
     }
 }
 
-.product-category {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--accent);
-    margin-bottom: 5px;
-    text-transform: uppercase;
-}
-
 /* ===================== */
-/*        FOOTER         */
+/* FOOTER         */
 /* ===================== */
 footer {
     text-align: center;

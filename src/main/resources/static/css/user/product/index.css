@@ -120,8 +120,8 @@
 
 /* RESPONSIVIDADE */
 @media (max-width: 1024px) {
-    .products {
-        justify-content: space-around;
+    .products-card {
+        margin-left: 5%;
     }
 }
 

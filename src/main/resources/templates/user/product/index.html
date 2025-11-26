@@ -5,39 +5,45 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GeekStore - Início</title>
-  
-  <!-- Font Awesome -->
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  
-  <!-- CSS Geral -->
+
   <link rel="stylesheet" href="/css/main.css">
   <link rel="stylesheet" href="/css/user/common.css">
-  <!-- CSS da página de produtos -->
   <link rel="stylesheet" href="/css/user/product/index.css">
 </head>
 
 <body>
-  <!-- ===== NAVBAR ===== -->
   <header>
-    <div class="logo"><i class="fa-solid fa-gamepad"></i> GeekStore</div>
+    <div class="logo">
+      <a th:href="@{/}" style="text-decoration: none; color: inherit;">
+        <i class="fa-solid fa-gamepad"></i> GeekStore
+      </a>
+    </div>
+
+    <form th:action="@{/products}" method="get" class="search-bar">
+      <input type="text" name="keyword" placeholder="Buscar produtos..." th:value="${keyword}" aria-label="Buscar" />
+      <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+    </form>
+
     <div class="nav-toggle"><i class="fa-solid fa-bars"></i></div>
+
     <nav>
       <ul>
         <li><a th:href="@{/}">Início</a></li>
         <li><a th:href="@{/cart}"><i class="fa-solid fa-cart-shopping"></i> Carrinho</a></li>
 
-        <!-- Usuário logado -->
         <li th:if="${user != null}"><a th:href="@{/profile}">Perfil</a></li>
         <li th:if="${user != null}"><a th:href="@{/logout}">Sair</a></li>
-        <li th:if="${user != null and user.role == 'ADMIN'}"><a th:href="@{/admin/products}">Painel Admin</a></li>
+        <li th:if="${user != null and user.role == 'ADMIN'}">
+          <a th:href="@{/admin/products}">Painel de Admin</a>
+        </li>
 
-        <!-- Usuário não logado -->
         <li th:if="${user == null}"><a th:href="@{/login}">Entrar</a></li>
       </ul>
     </nav>
   </header>
 
-  <!-- ===== HERO ===== -->
   <section class="hero-wrap">
     <div class="hero-content">
       <p class="welcome">Bem-vindo à</p>
@@ -51,19 +57,23 @@
     </div>
   </section>
 
-  <!-- ===== PRODUTOS ===== -->
   <section class="products" id="produtos">
+
     <div th:if="${#lists.isEmpty(products)}" class="empty-msg">
-      Nenhum produto disponível no momento. Volte mais tarde!
+      <span th:if="${keyword != null}">
+        Nenhum produto encontrado para "<strong><span th:text="${keyword}"></span></strong>".
+      </span>
+      <span th:if="${keyword == null}">
+        Nenhum produto disponível no momento. Volte mais tarde!
+      </span>
     </div>
 
     <div class="product-card" th:each="product : ${products}">
       <a th:href="@{/products/{id}(id=${product.id})}">
         <img th:src="@{/{filename}(filename=${product.imageUrl})}" th:alt="${product.name}" />
-        
-        <!-- Categoria segura: se null, mostra "Sem categoria" -->
+
         <p class="product-category" th:text="${product.category?.name} ?: 'Sem categoria'">Categoria</p>
-        
+
         <h3 th:text="${product.name}">Nome do produto</h3>
         <p class="product-description" th:text="${product.description}">Descrição do produto</p>
         <p class="product-price"><strong th:text="'R$ ' + ${product.price}">R$0,00</strong></p>
@@ -72,10 +82,8 @@
     </div>
   </section>
 
-  <!-- ===== FOOTER ===== -->
   <footer>&copy; 2025 GeekStore — Todos os direitos reservados.</footer>
 
-  <!-- ===== SCRIPTS ===== -->
   <script src="/js/user/product/index.js"></script>
   <script src="/js/user/product/nav-toggle.js"></script>
 </body>

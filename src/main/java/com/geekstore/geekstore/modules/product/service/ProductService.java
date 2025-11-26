@@ -22,15 +22,14 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     // Diretório onde as imagens serão salvas (dentro do static/)
-    public static final String ENDERECO_ARMAZENAMENTO_ARQUIVO =
-            "src/main/resources/static/images/";
+    public static final String ENDERECO_ARMAZENAMENTO_ARQUIVO = "src/main/resources/static/images/";
 
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
     // ---------------------------------------------------------
-    //  SALVAR IMAGEM — COM TODOS OS CONTROLES, SEM OMISSÕES
+    // SALVAR IMAGEM — COM TODOS OS CONTROLES, SEM OMISSÕES
     // ---------------------------------------------------------
     public String saveImageUrl(MultipartFile arquivo) throws IOException {
 
@@ -55,8 +54,8 @@ public class ProductService {
         }
 
         // ============================================
-        //   CÓPIA DA IMAGEM — maneira CORRETA no Windows
-        //   Usando try-with-resources para garantir fechamento do Stream
+        // CÓPIA DA IMAGEM — maneira CORRETA no Windows
+        // Usando try-with-resources para garantir fechamento do Stream
         // ============================================
         try (InputStream inputStream = arquivo.getInputStream()) {
 
@@ -67,8 +66,7 @@ public class ProductService {
             Files.copy(
                     inputStream,
                     destino,
-                    StandardCopyOption.REPLACE_EXISTING
-            );
+                    StandardCopyOption.REPLACE_EXISTING);
         }
 
         // Caminho que o navegador pode acessar (dentro de static/)
@@ -76,7 +74,7 @@ public class ProductService {
     }
 
     // ---------------------------------------------------------
-    //  MÉTODOS CRUD ↓
+    // MÉTODOS CRUD ↓
     // ---------------------------------------------------------
     public List<Product> findAll() {
         return productRepository.findAll();
@@ -92,5 +90,12 @@ public class ProductService {
 
     public void deleteById(Long id) {
         productRepository.deleteById(id);
+    }
+
+    public List<Product> search(String keyword) {
+        if (keyword != null && !keyword.isEmpty()) {
+            return productRepository.findByNameContainingIgnoreCase(keyword);
+        }
+        return productRepository.findAll();
     }
 }
