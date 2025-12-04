@@ -2,46 +2,51 @@
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 
 <head>
+
   <meta charset="UTF-8" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin - Gerenciar Produtos | GeekStore</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
   <link rel="stylesheet" href="/css/admin/base.css">
+
   <link rel="stylesheet" href="/css/admin/product.css">
 </head>
 
 <body>
+  <button id="sidebarToggle" class="sidebar-toggle"><i class="fa-solid fa-bars"></i></button>
+
   <aside class="sidebar">
     <div>
-      <div class="logo">GeekStore Admin</div>
+      <div class="logo"><i class="fa-solid fa-gamepad"></i> Admin</div>
       <nav>
-        <a href="/" class="back-to-site"><span>⬅️</span> Voltar ao Site</a>
-        <a th:href="@{/admin/products}" class="active">Produtos</a>
-        <a th:href="@{/admin/stocks}">Estoque</a>
-        <a th:href="@{/admin/users}">Usuários</a>
-        <a th:href="@{/admin/orders}">Pedidos</a>
-        <a th:href="@{/admin/categories}">Categorias</a>
+        <a href="/" class="back-to-site"><i class="fa-solid fa-arrow-left"></i> Voltar ao Site</a>
+        <a th:href="@{/admin/products}" class="active"><i class="fa-solid fa-box"></i> Produtos</a>
+        <a th:href="@{/admin/stocks}"><i class="fa-solid fa-boxes-stacked"></i> Estoque</a>
+        <a th:href="@{/admin/users}"><i class="fa-solid fa-users"></i> Usuários</a>
+        <a th:href="@{/admin/orders}"><i class="fa-solid fa-cart-shopping"></i> Pedidos</a>
+        <a th:href="@{/admin/categories}"><i class="fa-solid fa-tags"></i> Categorias</a>
       </nav>
     </div>
-    <div class="logout" th:onclick="'window.location.href=\'/logout\''">Sair</div>
+    <div class="logout" onclick="window.location.href='/logout'"><i class="fa-solid fa-right-from-bracket"></i> Sair
+    </div>
   </aside>
 
   <main class="main">
     <h1>Gerenciar Produtos</h1>
-
-    <button class="btn-add" id="openModal">+ Adicionar Produto</button>
+    <button class="btn-add" id="openModal"><i class="fa-solid fa-plus"></i> Adicionar Produto</button>
 
     <table>
       <thead>
         <tr>
           <th class="desktop-only">Imagem</th>
-
           <th>Nome</th>
-
           <th class="desktop-only">Preço</th>
           <th class="desktop-only">Categoria</th>
-
           <th class="actions-header">Ações</th>
-          <th class="more-column-header">Ver mais</th>
+          <th class="more-column-header">Detalhes</th>
         </tr>
       </thead>
       <tbody>
@@ -49,34 +54,23 @@
           <td class="desktop-only">
             <img th:src="@{/{filename}(filename=${product.imageUrl})}" th:alt="${product.name}" />
           </td>
-
-          <td th:text="${product.name}">Nome do Produto</td>
-
-          <td class="desktop-only" th:text="${#numbers.formatDecimal(product.price, 1, 2)}">0.00</td>
-          <td class="desktop-only" th:text="${product.category != null ? product.category.name : 'Sem Categoria'}">
-            Categoria</td>
+          <td th:text="${product.name}"></td>
+          <td class="desktop-only" th:text="${#numbers.formatDecimal(product.price, 1, 2)}"></td>
+          <td class="desktop-only" th:text="${product.category != null ? product.category.name : 'Sem Categoria'}"></td>
 
           <td class="actions">
-            <a href="#" class="edit" th:attr="data-id=${product.id},
-                                         data-name=${product.name},
-                                         data-price=${product.price},
-                                         data-category=${product.category != null ? product.category.id : ''},
-                                         data-image=${product.imageUrl}">
-              ✏️
+            <a href="#" class="edit"
+              th:attr="data-id=${product.id}, data-name=${product.name}, data-price=${product.price}, data-category=${product.category != null ? product.category.id : ''}, data-image=${product.imageUrl}, data-description=${product.description}">
+              <i class="fa-solid fa-pen"></i>
             </a>
-            <a th:href="@{/admin/products/delete/{id}(id=${product.id})}" class="delete">🗑️</a>
+            <a th:href="@{/admin/products/delete/{id}(id=${product.id})}" class="delete"><i
+                class="fa-solid fa-trash"></i></a>
           </td>
 
           <td class="more-column">
-            <a href="#" class="view" th:attr="data-id=${product.id},
-                                         data-name=${product.name},
-                                         data-price=${product.price},
-                                         data-category=${product.category != null ? product.category.name : 'Sem Categoria'},
-                                         data-image=@{/{filename}(filename=${product.imageUrl})},
-                                         data-cat-id=${product.category != null ? product.category.id : ''},
-                                         data-raw-image=${product.imageUrl},
-                                         data-delete=@{/admin/products/delete/{id}(id=${product.id})}">
-              👁️ Ver mais
+            <a href="#" class="view"
+              th:attr="data-id=${product.id}, data-name=${product.name}, data-price=${product.price}, data-category=${product.category != null ? product.category.name : 'Sem Categoria'}, data-image=@{/{filename}(filename=${product.imageUrl})}, data-cat-id=${product.category != null ? product.category.id : ''}, data-raw-image=${product.imageUrl}, data-delete=@{/admin/products/delete/{id}(id=${product.id})}, data-description=${product.description}">
+              Ver mais
             </a>
           </td>
         </tr>
@@ -90,30 +84,29 @@
       <h2 id="modalTitle">Adicionar Produto</h2>
       <form th:action="@{/admin/products}" method="post" enctype="multipart/form-data" id="productForm">
         <input type="hidden" id="productId" name="id" />
-
-        <label for="produto-nome">Nome</label>
-        <input type="text" id="produto-nome" name="name" placeholder="Nome do produto" required />
-
-        <label for="produto-preco">Preço</label>
-        <input type="number" id="produto-preco" name="price" placeholder="0.00" required min="0" step="0.01" />
-
-        <label for="produto-categoria">Categoria</label>
+        <label>Nome</label>
+        <input type="text" id="produto-nome" name="name" required />
+        <label>Descrição</label>
+        <textarea id="produto-descricao" name="description" rows="3" required></textarea>
+        <label>Preço</label>
+        <input type="number" id="produto-preco" name="price" required min="0" step="0.01" />
+        <label>Categoria</label>
         <select id="produto-categoria" name="category.id" required>
-          <option value="">Selecione uma categoria</option>
+          <option value="">Selecione...</option>
           <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}"></option>
         </select>
-
         <label>Imagem</label>
-        <label for="produto-imagem" class="file-label">Selecionar Imagem do Produto</label>
+        <label for="produto-imagem" class="file-label"><i class="fa-solid fa-upload"></i> Escolher
+          Imagem</label>
         <input type="file" id="produto-imagem" name="image" accept="image/*" />
 
-        <div style="margin-top: 10px; text-align: center;">
-          <img id="previewImage" class="preview-img" src="" alt="Preview"
-            style="display: none; max-width: 100px; max-height: 100px; border-radius: 5px;" />
+        <div style="text-align: center; margin-top: 10px;">
+          <img id="previewImage" class="preview-img" src="" alt="Preview" style="display: none;" />
         </div>
 
-        <button type="submit" class="btn-save" id="btnSave">Salvar Produto</button>
+        <button type="submit" class="btn-save">Salvar</button>
         <button type="button" class="btn-cancel" id="cancelModal">Cancelar</button>
+
       </form>
     </div>
   </div>
@@ -121,34 +114,34 @@
   <div class="modal-overlay" id="viewModalOverlay">
     <div class="modal">
       <span class="close" id="closeViewModal">×</span>
-      <h2>Detalhes do Produto</h2>
-
-      <div style="text-align: center; margin-bottom: 15px;">
-        <img id="viewImage" src="" alt="Produto" style="max-width: 100%; max-height: 150px; border-radius: 8px;">
+      <h2>Detalhes</h2>
+      <div style="text-align: center; margin-bottom: 20px;">
+        <img id="viewImage" src="" alt="Produto" class="preview-img" style="max-height: 150px; display: none;">
       </div>
-
       <label>ID</label>
       <p id="viewId" class="view-text"></p>
-
       <label>Nome</label>
       <p id="viewName" class="view-text"></p>
-
+      <label>Descrição</label>
+      <p id="viewDescription" class="view-text"></p>
       <label>Preço</label>
       <p id="viewPrice" class="view-text"></p>
-
       <label>Categoria</label>
       <p id="viewCategory" class="view-text"></p>
 
       <div class="modal-actions">
-        <button id="btnViewEdit" class="btn-action edit">✏️ Editar</button>
-        <a id="btnViewDelete" href="#" class="btn-action delete">🗑️ Remover</a>
+        <button id="btnViewEdit" class="btn-action edit">Editar</button>
+        <a id="btnViewDelete" href="#" class="btn-action delete">Remover</a>
       </div>
 
-      <button type="button" class="btn-cancel" id="closeViewButton" style="margin-top: 15px;">Fechar</button>
     </div>
   </div>
 
+
+  <script src="/js/admin/nav-toggle.js"></script>
+
   <script src="/js/admin/modal/common.js"></script>
+
   <script src="/js/admin/modal/product.js"></script>
 </body>
 

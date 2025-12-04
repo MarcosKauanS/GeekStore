@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meu Perfil - GeekStore</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/user/common.css">
+    <link rel="stylesheet" href="/css/user/profile/profile.css" />
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <a th:href="@{/}" style="text-decoration: none; color: inherit;">
+                <i class="fa-solid fa-gamepad"></i> GeekStore
+            </a>
+        </div>
+
+        <form th:action="@{/products}" method="get" class="search-bar">
+            <input type="text" name="keyword" placeholder="Buscar produtos..." th:value="${keyword}"
+                aria-label="Buscar" />
+            <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </form>
+
+        <div class="nav-toggle"><i class="fa-solid fa-bars"></i></div>
+
+        <nav>
+            <ul>
+                <li><a th:href="@{/}">Início</a></li>
+                <li><a th:href="@{/cart}"><i class="fa-solid fa-cart-shopping"></i> Carrinho</a></li>
+                <li th:if="${user != null}"><a th:href="@{/profile}">Perfil</a></li>
+                <li th:if="${user != null}"><a th:href="@{/logout}">Sair</a></li>
+                <li th:if="${user != null and user.role == 'ADMIN'}"><a th:href="@{/admin/products}">Painel Admin</a>
+                </li>
+                <li th:if="${user == null}"><a th:href="@{/login}">Entrar</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            <h1><i class="fa-solid fa-user-astronaut"></i> Meu Perfil</h1>
+
+            <div th:if="${successMessage}" class="alert alert-success">
+                <i class="fa-solid fa-circle-check"></i> <span th:text="${successMessage}"></span>
+            </div>
+            <div th:if="${passwordSuccessMessage}" class="alert alert-success">
+                <i class="fa-solid fa-circle-check"></i> <span th:text="${passwordSuccessMessage}"></span>
+            </div>
+            <div th:if="${passwordErrorMessage}" class="alert alert-error">
+                <i class="fa-solid fa-triangle-exclamation"></i> <span th:text="${passwordErrorMessage}"></span>
+            </div>
+
+            <div class="profile-layout">
+                <aside class="profile-sidebar">
+                    <div class="user-brief">
+                        <div class="avatar"><i class="fa-solid fa-user"></i></div>
+                        <h3 th:text="${user.name}">Usuário</h3>
+                        <p th:text="${user.role}">Role</p>
+                    </div>
+
+                    <nav class="profile-menu">
+                        <a th:href="@{/profile}" th:classappend="${param.fragment == null ? 'active' : ''}">
+                            <i class="fa-solid fa-id-card"></i> Resumo
+                        </a>
+                        <a th:href="@{/profile(fragment='edit')}"
+                            th:classappend="${param.fragment != null && param.fragment[0] == 'edit' ? 'active' : ''}">
+                            <i class="fa-solid fa-pen-to-square"></i> Editar Dados
+                        </a>
+                        <a th:href="@{/profile(fragment='password')}"
+                            th:classappend="${param.fragment != null && param.fragment[0] == 'password' ? 'active' : ''}">
+                            <i class="fa-solid fa-lock"></i> Segurança
+                        </a>
+                        <a th:href="@{/profile(fragment='orders')}"
+                            th:classappend="${param.fragment != null && param.fragment[0] == 'orders' ? 'active' : ''}">
+                            <i class="fa-solid fa-box-open"></i> Meus Pedidos
+                        </a>
+                        <a th:href="@{/logout}" class="logout-link"><i class="fa-solid fa-right-from-bracket"></i>
+                            Sair</a>
+                    </nav>
+                </aside>
+
+                <div class="profile-content">
+
+                    <section th:if="${param.fragment == null}" class="profile-card fade-in">
+                        <h3 class="card-title">Informações da Conta</h3>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <label>Nome Completo</label>
+                                <span th:text="${user.name}">Nome</span>
+                            </div>
+                            <div class="info-item">
+                                <label>E-mail</label>
+                                <span th:text="${user.email}">Email</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Tipo de Conta</label>
+                                <span class="badge" th:text="${user.role}">Role</span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section th:if="${param.fragment != null && param.fragment[0] == 'edit'}"
+                        class="profile-card fade-in">
+                        <h3 class="card-title">Editar Perfil</h3>
+                        <form th:action="@{/profile/update}" method="post" class="standard-form"
+                            th:object="${profileUpdateDTO}">
+                            <div class="form-group">
+                                <label for="name">Nome</label>
+                                <input type="text" id="name" name="name" th:value="${user.name}" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" name="email" th:value="${user.email}" required />
+                            </div>
+                            <button type="submit" class="btn-save">Salvar Alterações</button>
+                        </form>
+                    </section>
+
+                    <section th:if="${param.fragment != null && param.fragment[0] == 'password'}"
+                        class="profile-card fade-in">
+                        <h3 class="card-title">Alterar Senha</h3>
+                        <form th:action="@{/profile/password}" method="post" class="standard-form"
+                            th:object="${passwordUpdateDTO}">
+                            <div class="form-group">
+                                <label for="currentPassword">Senha Atual</label>
+                                <input type="password" id="currentPassword" name="currentPassword" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="newPassword">Nova Senha</label>
+                                <input type="password" id="newPassword" name="newPassword" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="confirmPassword">Confirmar Nova Senha</label>
+                                <input type="password" id="confirmPassword" name="confirmPassword" required />
+                            </div>
+                            <button type="submit" class="btn-save">Atualizar Senha</button>
+                        </form>
+                    </section>
+
+                    <section th:if="${param.fragment != null && param.fragment[0] == 'orders'}"
+                        class="profile-card fade-in">
+                        <h3 class="card-title">Histórico de Compras</h3>
+
+                        <div th:if="${orders == null or #lists.isEmpty(orders)}" class="empty-state">
+                            <i class="fa-solid fa-basket-shopping"></i>
+                            <p>Você ainda não fez nenhum pedido.</p>
+                            <a th:href="@{/products}" class="btn-link">Ir às compras</a>
+                        </div>
+
+                        <div th:unless="${orders == null or #lists.isEmpty(orders)}" class="table-responsive">
+                            <table class="styled-table">
+                                <thead>
+                                    <tr>
+                                        <th>#ID</th>
+                                        <th>Data</th>
+                                        <th>Total</th>
+                                        <th>Status</th>
+                                        <th>Itens</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="order : ${orders}">
+                                        <td th:text="'#' + ${order.id}" class="highlight"></td>
+                                        <td th:text="${#temporals.format(order.orderDate, 'dd/MM/yyyy HH:mm')}"></td>
+                                        <td th:text="'R$ ' + ${order.totalAmount}"></td>
+                                        <td>
+                                            <span
+                                                th:class="'status-badge status-' + ${#strings.toLowerCase(order.status)}"
+                                                th:text="${order.status}"></span>
+                                        </td>
+                                        <td th:text="${order.items != null ? order.items.size() : 0}"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>&copy; 2025 GeekStore — Todos os direitos reservados.</footer>
+    <script src="/js/user/product/nav-toggle.js"></script>
+</body>
+
+</html>

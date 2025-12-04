@@ -6,9 +6,10 @@ import com.geekstore.geekstore.modules.product.model.Product;
 @Entity
 @Table(name = "stocks")
 public class Stock {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
 
     @OneToOne
     @JoinColumn(name = "product_id", nullable = false)
@@ -17,12 +18,14 @@ public class Stock {
     @Column(nullable = false)
     private Integer quantity;
 
+    // GETTERS E SETTERS
+
     public Long getId() {
-        return Id;
+        return id;
     }
 
     public void setId(Long id) {
-        Id = id;
+        this.id = id;
     }
 
     public Product getProduct() {

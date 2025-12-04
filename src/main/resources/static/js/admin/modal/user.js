@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     const viewModal = document.getElementById("viewModalOverlay");
     const editModalOverlay = document.getElementById("modalOverlay");
+    const openModalBtn = document.getElementById("openModal");
 
     const viewId = document.getElementById("viewId");
     const viewName = document.getElementById("viewName");
@@ -13,65 +14,59 @@ document.addEventListener("DOMContentLoaded", () => {
     const formName = document.getElementById("name");
     const formEmail = document.getElementById("email");
     const formRole = document.getElementById("role");
+    const formPassword = document.getElementById("password");
     const modalTitle = document.getElementById("modalTitle");
-    const openModalBtn = document.getElementById("openModal");
 
-    const closeViewModal = () => viewModal.style.display = "none";
+    const closeViewModal = () => { if (viewModal) viewModal.style.display = "none"; };
 
     if (openModalBtn) {
         openModalBtn.addEventListener("click", () => {
-            formId.value = "";
-            formName.value = "";
-            formEmail.value = "";
-            formRole.value = "CLIENTE";
-            modalTitle.textContent = "Adicionar Usuário";
-            editModalOverlay.style.display = "flex";
+            if (formId) formId.value = "";
+            if (formName) formName.value = "";
+            if (formEmail) formEmail.value = "";
+            if (formRole) formRole.value = "CLIENTE";
+            if (formPassword) {
+                formPassword.value = "";
+                formPassword.required = true;
+            }
+            if (modalTitle) modalTitle.textContent = "Adicionar Usuário";
+            if (editModalOverlay) editModalOverlay.style.display = "flex";
         });
     }
 
     document.querySelectorAll(".edit").forEach(btn => {
         btn.addEventListener("click", (e) => {
             e.preventDefault();
-            const id = btn.getAttribute("data-id");
-
-            formId.value = id || "";
-            formName.value = btn.getAttribute("data-name");
-            formEmail.value = btn.getAttribute("data-email");
-            formRole.value = btn.getAttribute("data-role");
-
-            modalTitle.textContent = "Editar Usuário";
-            editModalOverlay.style.display = "flex";
+            if (formId) formId.value = btn.getAttribute("data-id");
+            if (formName) formName.value = btn.getAttribute("data-name");
+            if (formEmail) formEmail.value = btn.getAttribute("data-email");
+            if (formRole) formRole.value = btn.getAttribute("data-role");
+            if (formPassword) {
+                formPassword.value = "";
+                formPassword.required = false;
+            }
+            if (modalTitle) modalTitle.textContent = "Editar Usuário";
+            if (editModalOverlay) editModalOverlay.style.display = "flex";
         });
     });
 
     document.querySelectorAll(".view").forEach(btn => {
-        btn.addEventListener("click", (event) => {
-            event.preventDefault();
+        btn.addEventListener("click", (e) => {
+            e.preventDefault();
+            if (viewId) viewId.textContent = btn.getAttribute("data-id");
+            if (viewName) viewName.textContent = btn.getAttribute("data-name");
+            if (viewEmail) viewEmail.textContent = btn.getAttribute("data-email");
+            if (viewRole) viewRole.textContent = btn.getAttribute("data-role");
+            if (btnViewDelete) btnViewDelete.href = btn.getAttribute("data-delete");
 
-            const id = btn.getAttribute("data-id");
-            const name = btn.getAttribute("data-name");
-            const email = btn.getAttribute("data-email");
-            const role = btn.getAttribute("data-role");
-            const deleteUrl = btn.getAttribute("data-delete");
-
-            viewId.textContent = id;
-            viewName.textContent = name;
-            viewEmail.textContent = email;
-            viewRole.textContent = role;
-            btnViewDelete.href = deleteUrl;
-
-            btnViewEdit.onclick = () => {
-                closeViewModal();
-                formId.value = (id && id !== "undefined") ? id : "";
-                formName.value = name;
-                formEmail.value = email;
-                formRole.value = role;
-
-                modalTitle.textContent = "Editar Usuário";
-                editModalOverlay.style.display = "flex";
-            };
-
-            viewModal.style.display = "flex";
+            if (btnViewEdit) {
+                btnViewEdit.onclick = () => {
+                    closeViewModal();
+                    const originalEdit = document.querySelector(`.edit[data-id='${btn.getAttribute("data-id")}']`);
+                    if (originalEdit) originalEdit.click();
+                };
+            }
+            if (viewModal) viewModal.style.display = "flex";
         });
     });
 });

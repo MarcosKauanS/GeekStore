@@ -4,6 +4,9 @@ import com.geekstore.geekstore.modules.product.model.Product;
 import com.geekstore.geekstore.modules.product.service.ProductService;
 import com.geekstore.geekstore.modules.user.model.User;
 import com.geekstore.geekstore.modules.user.service.UserService;
+
+import jakarta.annotation.PostConstruct;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;

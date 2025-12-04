@@ -12,5 +12,4 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     // Busca todos os pedidos do usuário logado
     List<Order> findByUser(User user);
-
 }

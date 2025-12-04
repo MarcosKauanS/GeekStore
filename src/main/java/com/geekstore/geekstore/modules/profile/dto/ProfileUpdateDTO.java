@@ -1,4 +1,4 @@
-package com.geekstore.geekstore.modules.user.profile.dto;
+package com.geekstore.geekstore.modules.profile.dto;
 
 public class ProfileUpdateDTO {
 

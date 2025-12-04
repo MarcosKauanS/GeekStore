@@ -1,124 +1,103 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
-
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin - Pedidos | GeekStore</title>
-  <link rel="stylesheet" href="/css/admin/base.css">
-  <link rel="stylesheet" href="/css/admin/order.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin - Pedidos | GeekStore</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="/css/admin/base.css">
+    <link rel="stylesheet" href="/css/admin/order.css">
 </head>
-
 <body>
-  <aside class="sidebar">
-    <div>
-      <div class="logo">GeekStore Admin</div>
-      <nav>
-        <a href="/" class="back-to-site"><span>⬅️</span> Voltar ao Site</a>
-        <a th:href="@{/admin/products}">Produtos</a>
-        <a th:href="@{/admin/stocks}">Estoque</a>
-        <a th:href="@{/admin/users}">Usuários</a>
-        <a th:href="@{/admin/orders}" class="active">Pedidos</a>
-        <a th:href="@{/admin/categories}">Categorias</a>
-      </nav>
+    <button id="sidebarToggle" class="sidebar-toggle"><i class="fa-solid fa-bars"></i></button>
+
+    <aside class="sidebar">
+        <div>
+            <div class="logo"><i class="fa-solid fa-gamepad"></i> Admin</div>
+            <nav>
+                <a href="/" class="back-to-site"><i class="fa-solid fa-arrow-left"></i> Voltar ao Site</a>
+                <a th:href="@{/admin/products}"><i class="fa-solid fa-box"></i> Produtos</a>
+                <a th:href="@{/admin/stocks}"><i class="fa-solid fa-boxes-stacked"></i> Estoque</a>
+                <a th:href="@{/admin/users}"><i class="fa-solid fa-users"></i> Usuários</a>
+                <a th:href="@{/admin/orders}" class="active"><i class="fa-solid fa-cart-shopping"></i> Pedidos</a>
+                <a th:href="@{/admin/categories}"><i class="fa-solid fa-tags"></i> Categorias</a>
+            </nav>
+        </div>
+        <div class="logout" onclick="window.location.href='/logout'"><i class="fa-solid fa-right-from-bracket"></i> Sair</div>
+    </aside>
+
+    <main class="main">
+        <h1>Gerenciamento de Pedidos</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Usuário</th>
+                    <th class="desktop-only">ID</th>
+                    <th class="desktop-only">Data</th>
+                    <th class="desktop-only">Total</th>
+                    <th class="desktop-only">Status</th>
+                    <th class="actions-header">Ações</th>
+                    <th class="more-column-header">Opções</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="order : ${orders}">
+                    <td th:text="${order.user.name}"></td>
+                    <td class="desktop-only" th:text="'#'+${order.id}"></td>
+                    <td class="desktop-only" th:text="${#temporals.format(order.orderDate, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td class="desktop-only" th:text="'R$ ' + ${#numbers.formatDecimal(order.totalAmount, 1, 'POINT', 2, 'COMMA')}"></td>
+                    <td class="desktop-only">
+                        <span th:text="${order.status}" th:class="'status ' + ${order.status}"></span>
+                    </td>
+                    <td class="actions">
+                        <a href="#" class="edit" th:attr="data-id=${order.id},data-status=${order.status}"><i class="fa-solid fa-pen"></i></a>
+                    </td>
+                    <td class="more-column">
+                        <a href="#" class="view" th:attr="data-id=${order.id}, data-user=${order.user.name}, data-status=${order.status}, data-total=${order.totalAmount}, data-date=${order.orderDate}">Ver mais</a>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(orders)}">
+                    <td colspan="7" class="empty-message">Nenhum pedido encontrado.</td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <span class="close" id="closeModal">×</span>
+            <h2>Atualizar Status</h2>
+            <form th:action="@{/admin/orders/update-status}" method="post" id="orderForm">
+                <input type="hidden" id="orderId" name="id" />
+                <label>Status</label>
+                <select id="status" name="status" required>
+                    <option value="PENDING">Pendente</option>
+                    <option value="PAID">Pago</option>
+                    <option value="SHIPPED">Enviado</option>
+                    <option value="DELIVERED">Entregue</option>
+                    <option value="CANCELLED">Cancelado</option>
+                </select>
+                <button type="submit" class="btn-save">Salvar</button>
+                <button type="button" class="btn-cancel" id="cancelModal">Cancelar</button>
+            </form>
+        </div>
     </div>
-    <div class="logout" th:onclick="'window.location.href=\'/logout\''">Sair</div>
-  </aside>
 
-  <main class="main">
-    <h1>Gerenciamento de Pedidos</h1>
-
-    <table>
-      <thead>
-        <tr>
-          <th>Usuário</th>
-
-          <th class="desktop-only">ID</th>
-
-          <th class="desktop-only">Data</th>
-          <th class="desktop-only">Total (R$)</th>
-          <th class="desktop-only">Status</th>
-
-          <th class="actions-header">Ações</th>
-          <th class="more-column-header">Ver mais</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr th:each="order : ${orders}">
-          <td th:text="${order.user.name}">Usuário</td>
-
-          <td class="desktop-only" th:text="${order.id}">1</td>
-
-          <td class="desktop-only" th:text="${#temporals.format(order.orderDate, 'dd/MM/yyyy HH:mm')}"></td>
-          <td class="desktop-only" th:text="${#numbers.formatDecimal(order.totalAmount, 1, 'POINT', 2, 'COMMA')}"></td>
-          <td class="desktop-only">
-            <span th:text="${order.status}" th:class="'status ' + ${order.status}"></span>
-          </td>
-
-          <td class="actions">
-            <a href="#" class="edit" th:attr="data-id=${order.id},data-status=${order.status}">✏️</a>
-          </td>
-
-          <td class="more-column">
-            <a href="#" class="view" th:attr="data-id=${order.id},
-                                    data-user=${order.user.name},
-                                    data-date=${#temporals.format(order.orderDate, 'dd/MM/yyyy HH:mm')},
-                                    data-total=${#numbers.formatDecimal(order.totalAmount, 1, 'POINT', 2, 'COMMA')},
-                                    data-status=${order.status}">
-              👁️ Ver mais
-            </a>
-          </td>
-        </tr>
-        <tr th:if="${#lists.isEmpty(orders)}">
-          <td colspan="7" class="empty-message">Nenhum pedido encontrado.</td>
-        </tr>
-      </tbody>
-    </table>
-  </main>
-
-  <div class="modal-overlay" id="modalOverlay">
-    <div class="modal">
-      <span class="close" id="closeModal">×</span>
-      <h2>Editar Status do Pedido</h2>
-      <form th:action="@{/admin/orders/update-status}" method="post" id="orderForm">
-        <input type="hidden" id="orderId" name="id" />
-        <label for="status">Status</label>
-        <select id="status" name="status" required>
-          <option value="PENDING">Pendente</option>
-          <option value="PAID">Pago</option>
-          <option value="SHIPPED">Enviado</option>
-          <option value="DELIVERED">Entregue</option>
-          <option value="CANCELLED">Cancelado</option>
-        </select>
-        <button type="submit" class="btn-save">Salvar</button>
-        <button type="button" class="btn-cancel" id="cancelModal">Cancelar</button>
-      </form>
+    <div class="modal-overlay" id="viewModalOverlay">
+        <div class="modal">
+            <span class="close" id="closeViewModal">×</span>
+            <h2>Detalhes do Pedido</h2>
+            <label>ID</label> <p id="viewId" class="view-text"></p>
+            <label>Usuário</label> <p id="viewUser" class="view-text"></p>
+            <label>Status</label> <p id="viewStatus" class="view-text"></p>
+            <div class="modal-actions">
+                <button id="btnViewEdit" class="btn-action edit">Alterar Status</button>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <div class="modal-overlay" id="viewModalOverlay">
-    <div class="modal">
-      <span class="close" id="closeViewModal">×</span>
-      <h2>Detalhes do Pedido</h2>
-      <label>ID</label>
-      <p id="viewId" class="view-text"></p>
-      <label>Usuário</label>
-      <p id="viewUser" class="view-text"></p>
-      <label>Data</label>
-      <p id="viewDate" class="view-text"></p>
-      <label>Total</label>
-      <p id="viewTotal" class="view-text"></p>
-      <label>Status</label>
-      <p id="viewStatus" class="view-text"></p>
-      <div class="modal-actions">
-        <button id="btnViewEdit" class="btn-action edit">✏️ Editar Status</button>
-      </div>
-      <button type="button" class="btn-cancel" id="closeViewButton" style="margin-top: 15px;">Fechar</button>
-    </div>
-  </div>
-
-  <script src="/js/admin/modal/common.js"></script>
-  <script src="/js/admin/modal/order.js"></script>
+    <script src="/js/admin/nav-toggle.js"></script>
+    <script src="/js/admin/modal/common.js"></script>
+    <script src="/js/admin/modal/order.js"></script>
 </body>
-
 </html>

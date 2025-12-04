@@ -1,351 +1,482 @@
-/* -------------------------------------------------------------------
-* 1. DESIGN TOKENS (CSS Variables) - NOVO DESTAQUE: #00ffc6
-* ------------------------------------------------------------------- */
-:root {
-    /* Cores */
-    --color-bg-primary: #121217; /* Fundo mais escuro */
-    --color-bg-container: #1b1b26; /* Fundo do card principal */
-    --color-bg-card: #252538; /* Fundo dos sub-cards */
-    --color-text-primary: #e8e8e8;
-    --color-text-secondary: #a0a0a0;
-    --color-accent: #00ffc6; /* COR DE DESTAQUE SOLICITADA */
-    --color-accent-hover: #00e6b3; /* Sombra/hover da cor de destaque */
-    --color-border: #3a3a4c;
-
-    /* Status Colors (Mantidas para contraste) */
-    --status-pending: #ffc107;
-    --status-completed: #28a745;
-    --status-cancelled: #dc3545;
-
-    /* Spacing & Radius */
-    --space-sm: 10px;
-    --space-md: 20px;
-    --space-lg: 30px;
-    --radius-sm: 8px;
-    --radius-lg: 16px;
-    --shadow-deep: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 15px rgba(0, 0, 0, 0.2);
+/* ===================== */
+/* CONTAINER & GERAL     */
+/* ===================== */
+.container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    min-height: 60vh;
+    /* Garante que o container nunca exceda a tela */
+    width: 100%;
+    overflow-x: hidden;
 }
 
-/* -------------------------------------------------------------------
-* 2. BASE STYLES
-* ------------------------------------------------------------------- */
-body {
-    background: var(--color-bg-primary);
-    color: var(--color-text-primary);
-    /* Incluindo Inter para melhor visualização */
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    line-height: 1.6;
-    min-height: 100vh;
-    margin: 0;
-    padding: 0;
-}
-
-a {
-    text-decoration: none;
-    color: inherit;
-}
-
-/* -------------------------------------------------------------------
-* 3. CONTAINER AND LAYOUT
-* ------------------------------------------------------------------- */
-.profile-container {
-    max-width: 900px;
-    margin: var(--space-lg) auto;
-    padding: var(--space-lg);
-    border-radius: var(--radius-lg);
-    background: var(--color-bg-container);
-    box-shadow: var(--shadow-deep);
-    border: 1px solid var(--color-border);
-}
-
-.profile-title {
+h1 {
     text-align: center;
-    font-size: 2.2rem;
-    font-weight: 700;
-    margin-bottom: var(--space-lg);
-    letter-spacing: 0.5px;
-    color: var(--color-accent); /* Destaque na nova cor */
+    color: var(--accent);
+    margin-bottom: 40px;
+    font-size: clamp(24px, 5vw, 36px);
+    /* Fonte responsiva */
 }
 
-/* -------------------------------------------------------------------
-* 4. NAVIGATION MENU
-* ------------------------------------------------------------------- */
+h1 i {
+    margin-right: 10px;
+}
+
+/* Layout Grid Desktop */
+.profile-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 30px;
+    align-items: start;
+}
+
+/* ===================== */
+/* SIDEBAR (LATERAL)     */
+/* ===================== */
+.profile-sidebar {
+    background-color: var(--card-bg);
+    border-radius: 16px;
+    padding: 30px 20px;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    text-align: center;
+    position: sticky;
+    top: 100px;
+    z-index: 10;
+}
+
+.user-brief .avatar {
+    width: 80px;
+    height: 80px;
+    background: rgba(108, 99, 255, 0.2);
+    color: var(--accent);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    margin: 0 auto 15px;
+    border: 2px solid var(--accent);
+    flex-shrink: 0;
+    /* Impede amassar o avatar */
+}
+
+.user-brief h3 {
+    color: var(--text-main);
+    font-size: 20px;
+    margin-bottom: 5px;
+    word-break: break-word;
+    /* Evita nome estourar */
+}
+
+.user-brief p {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 25px;
+    background: rgba(255, 255, 255, 0.05);
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 50px;
+}
+
+/* Menu de Navegação */
 .profile-menu {
     display: flex;
-    gap: var(--space-md);
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-bottom: var(--space-md);
-    padding-bottom: 5px;
-}
-
-.profile-menu a {
-    padding: var(--space-sm) var(--space-md);
-    border-radius: var(--radius-sm);
-    font-weight: 600;
-    color: var(--color-text-primary);
-    border: 2px solid transparent;
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    text-align: center;
-}
-
-.profile-menu a:hover {
-    border-bottom: 2px solid var(--color-accent);
-    color: var(--color-accent);
-}
-
-.profile-menu a.active {
-    background: var(--color-accent);
-    color: var(--color-bg-primary); /* Alto contraste: texto escuro no fundo claro */
-    box-shadow: 0 4px 8px rgba(0, 255, 198, 0.5);
-}
-
-.profile-menu a.active:hover {
-    border-bottom: 2px solid transparent;
-}
-
-/* -------------------------------------------------------------------
-* 5. CARDS, FORMS, AND BUTTONS
-* ------------------------------------------------------------------- */
-.profile-card {
-    background: var(--color-bg-card);
-    border-radius: var(--radius-lg);
-    padding: var(--space-md);
-    margin-bottom: var(--space-md);
-    border: 1px solid var(--color-border);
-}
-
-/* Classe para controle de exibição via JS (Melhoria 1: Transição) */
-.profile-section {
-    display: none; 
-    opacity: 0; /* Inicia opaco */
-    transition: opacity 0.4s ease-in-out; /* Adiciona transição suave */
-}
-
-/* Classe adicionada pelo JS para exibir a seção com fade-in */
-.profile-section.active-visible {
-    opacity: 1;
-}
-
-.profile-section-title {
-    font-size: 1.4rem;
-    font-weight: 600;
-    border-bottom: 2px solid var(--color-accent);
-    padding-bottom: var(--space-sm);
-    margin-bottom: var(--space-md);
-    color: var(--color-text-primary);
-}
-
-.profile-card p strong {
-    color: var(--color-text-secondary);
-}
-
-.profile-form {
-    display: flex;
     flex-direction: column;
-    gap: var(--space-sm);
-}
-
-.profile-form label {
-    font-weight: 600;
-    margin-top: 5px;
-    color: var(--color-text-secondary);
-}
-
-.profile-form input {
-    padding: var(--space-sm);
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--color-border);
-    background: var(--color-bg-primary);
-    color: var(--color-text-primary);
-    transition: all 0.3s ease;
-}
-
-.profile-form input:focus {
-    border-color: var(--color-accent);
-    outline: none;
-    box-shadow: 0 0 10px rgba(0, 255, 198, 0.6);
-}
-
-/* --- BUTTONS --- */
-.btn-primary {
-    display: inline-block;
-    background: var(--color-accent);
-    color: var(--color-bg-primary); /* Alto contraste: texto escuro no fundo claro */
-    border: none;
-    border-radius: var(--radius-sm);
-    padding: 12px 18px;
-    font-weight: 600;
-    cursor: pointer;
-    text-align: center;
-    transition: all 0.2s ease-in-out;
-    width: 100%;
-    max-width: 300px; /* Limite de largura para desktop */
-    align-self: flex-end;
-    margin-top: var(--space-sm);
-}
-
-.btn-back {
-    display: inline-block;
-    background: var(--color-accent);
-    color: var(--color-bg-primary); /* Alto contraste: texto escuro no fundo claro */
-    border: none;
-    border-radius: var(--radius-sm);
-    padding: 12px 18px;
-    font-weight: 600;
-    cursor: pointer;
-    text-align: center;
-    transition: all 0.2s ease-in-out;
-    margin-bottom: var(--space-md);
-    width: auto;
-    max-width: none;
-    align-self: flex-start;
-}
-
-.btn-primary:hover, .btn-back:hover {
-    background: var(--color-accent-hover);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0, 255, 198, 0.4);
-}
-
-
-/* --- ALERT MESSAGES --- */
-.alert-message {
-    text-align: center;
-    margin-bottom: var(--space-md);
-    padding: var(--space-sm);
-    border-radius: var(--radius-sm);
-}
-.alert-success {
-    border: 2px solid var(--color-accent);
-    color: var(--color-accent);
-}
-.alert-error {
-    background: var(--status-cancelled);
-    color: #fff;
-}
-
-/* Adaptação das classes Thymeleaf para Alertas visuais */
-.alert-message .btn-outline {
-    border: none;
-    padding: 0;
-    font-weight: 400;
-    font-size: 1em;
-    display: block;
-}
-.alert-message .btn-danger {
-    background: none;
-    padding: 0;
-    font-weight: 400;
-    font-size: 1em;
-    display: block;
-}
-
-
-/* -------------------------------------------------------------------
-* 6. ORDER HISTORY TABLE
-* ------------------------------------------------------------------- */
-.order-table-wrapper {
-    overflow-x: auto;
-    border-radius: var(--radius-sm);
-}
-
-.order-history-table {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 650px;
-}
-
-.order-history-table th, .order-history-table td {
-    padding: 15px;
-    border-bottom: 1px solid var(--color-border);
+    gap: 10px;
     text-align: left;
 }
 
-.order-history-table th {
-    background: var(--color-bg-container);
-    color: var(--color-text-secondary);
-    font-weight: 700;
-    text-transform: uppercase;
-    font-size: 0.9rem;
+.profile-menu a {
+    padding: 12px 15px;
+    border-radius: 8px;
+    color: var(--text-muted);
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
 }
 
-.order-history-table tr:hover td {
-    background: rgba(0, 255, 198, 0.05); /* Efeito hover sutil com a nova cor */
+.profile-menu a i {
+    width: 20px;
+    text-align: center;
+    flex-shrink: 0;
 }
 
-.order-status {
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-weight: 700;
-    font-size: 0.75rem;
+.profile-menu a:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--primary);
+}
+
+.profile-menu a.active {
+    background-color: var(--primary);
+    color: var(--bg-color);
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(0, 255, 198, 0.3);
+}
+
+.logout-link {
+    margin-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 15px;
+    color: var(--danger) !important;
+}
+
+.logout-link:hover {
+    background: rgba(255, 76, 76, 0.1) !important;
+}
+
+/* ===================== */
+/* CONTEÚDO PRINCIPAL    */
+/* ===================== */
+.profile-card {
+    background-color: var(--card-bg);
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    /* Garante que o card não exceda o pai */
+    width: 100%;
+    overflow: hidden;
+}
+
+.card-title {
+    color: var(--primary);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 15px;
+    margin-bottom: 25px;
+    font-size: 20px;
+}
+
+/* Grid de Informações (Resumo) */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.info-item {
+    /* Garante que o texto longo quebre */
+    min-width: 0;
+}
+
+.info-item label {
+    display: block;
+    color: var(--text-muted);
+    font-size: 13px;
+    margin-bottom: 5px;
     text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-item span {
+    font-size: 16px;
+    color: var(--text-main);
+    font-weight: 500;
+    word-break: break-word;
+    /* Quebra email longo */
+}
+
+.info-item .badge {
+    background: rgba(0, 255, 198, 0.15);
+    color: var(--primary);
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* Formulários */
+.standard-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    /* Largura total */
+    max-width: 600px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-muted);
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: var(--text-main);
+    font-size: 16px;
+    outline: none;
+    transition: 0.3s;
+}
+
+.form-group input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 8px rgba(0, 255, 198, 0.2);
+}
+
+.btn-save {
+    background-color: var(--primary);
+    color: var(--bg-color);
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 16px;
+    align-self: flex-start;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.btn-save:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 255, 198, 0.3);
+}
+
+/* ===================== */
+/* TABELA DE PEDIDOS     */
+/* ===================== */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    /* Permite rolagem horizontal APENAS na tabela */
+    -webkit-overflow-scrolling: touch;
+    /* Rolagem suave no iOS */
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    /* Força uma largura mínima para a tabela não se espremer */
+    min-width: 600px;
+}
+
+.styled-table th {
+    text-align: left;
+    padding: 15px;
+    background-color: rgba(0, 0, 0, 0.2);
+    color: var(--accent);
+    font-size: 14px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.styled-table td {
+    padding: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: var(--text-muted);
+    white-space: nowrap;
+    /* Evita quebra de linha feia em células pequenas */
+}
+
+.styled-table tr:hover {
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+.styled-table .highlight {
+    color: var(--text-main);
+    font-weight: bold;
+}
+
+/* Badges Status */
+.status-badge {
+    padding: 5px 12px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.status-pending {
+    background: rgba(255, 213, 0, 0.15);
+    color: #ffd500;
+}
+
+.status-completed {
+    background: rgba(0, 255, 198, 0.15);
+    color: var(--primary);
+}
+
+.status-cancelled {
+    background: rgba(255, 76, 76, 0.15);
+    color: var(--danger);
+}
+
+/* Estados Vazios e Alertas */
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted);
+}
+
+.empty-state i {
+    font-size: 40px;
+    margin-bottom: 15px;
+    color: #ffd500;
+}
+
+.btn-link {
+    color: var(--primary);
+    font-weight: bold;
     display: inline-block;
+    margin-top: 10px;
 }
 
-.status-pending { background: var(--status-pending); color: #222; }
-.status-completed { background: var(--status-completed); color: #fff; }
-.status-cancelled { background: var(--status-cancelled); color: #fff; }
+.alert {
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    /* Garante que não estoure */
+}
 
-/* -------------------------------------------------------------------
-* 7. RESPONSIVENESS (Otimizado para "respiro" e melhor usabilidade)
-* ------------------------------------------------------------------- */
-@media (max-width: 768px) {
-    .profile-container {
-        padding: var(--space-md);
-        /* Melhoria 2: Mais 'respiro' nas laterais em telas pequenas */
-        margin: var(--space-md) var(--space-sm); 
-        box-shadow: none;
+.alert-success {
+    background: rgba(0, 255, 198, 0.15);
+    color: var(--primary);
+}
+
+.alert-error {
+    background: rgba(255, 76, 76, 0.15);
+    color: #ff9999;
+}
+
+/* Animação */
+.fade-in {
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
     }
-    .profile-title {
-        font-size: 1.8rem;
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
-    .profile-menu {
+}
+
+/* ===================== */
+/* RESPONSIVIDADE (FIX)  */
+/* ===================== */
+@media (max-width: 900px) {
+    .container {
+        padding: 0 15px;
+        /* Menos padding lateral no mobile */
+        margin: 20px auto;
+    }
+
+    /* Reseta o Grid para Flex Column */
+    .profile-layout {
+        display: flex;
         flex-direction: column;
-        /* Melhoria 2: Aumento do espaçamento entre itens do menu */
-        gap: var(--space-md); 
+        gap: 20px;
     }
-    .profile-menu a {
+
+    /* Sidebar no Topo */
+    .profile-sidebar {
+        position: relative;
+        /* Remove sticky */
+        top: 0;
+        padding: 20px;
         width: 100%;
-        /* Melhoria 2: Aumento do padding vertical para facilitar o toque (Touch Target) */
-        padding: 12px var(--space-md);
     }
-    
-    /* Garantir que todos os botões e inputs ocupem 100% no mobile */
-    .profile-form input, 
-    .btn-primary, 
-    .btn-danger, 
-    .btn-outline, 
-    .btn-back {
-        width: 100%;
-        max-width: none; 
-        padding: 14px 0;
-        align-self: center;
+
+    /* Reorganiza o cabeçalho do usuário para Flex */
+    .user-brief {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 15px;
+        text-align: left;
     }
-    
-    /* Ajustes específicos para a tabela (Melhoria 3: Refino da visualização card) */
-    .order-history-table {
-        min-width: unset;
+
+    .user-brief .avatar {
+        margin: 0;
+        width: 60px;
+        height: 60px;
+        font-size: 24px;
     }
-    .order-history-table thead {
+
+    .user-brief h3 {
+        font-size: 18px;
+        margin: 0;
+    }
+
+    .user-brief p {
+        margin: 5px 0 0 0;
+    }
+
+
+
+    /* Menu Horizontal (Scrollável) */
+    .profile-menu {
+        flex-direction: row;
+        overflow-x: auto;
+        /* Scroll horizontal */
+        padding-bottom: 5px;
+        gap: 10px;
+        max-width: 100%;
+        /* IMPEDE OVERFLOW DA TELA */
+        /* Esconde scrollbar feia */
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .profile-menu::-webkit-scrollbar {
         display: none;
     }
-    .order-history-table td {
-        display: block;
-        text-align: right;
-        padding: var(--space-sm) var(--space-md); /* Espaçamento mais consistente */
-        padding-left: 50%;
-        position: relative;
-    }
-    .order-history-table td:before {
-        content: attr(data-label);
-        position: absolute;
-        left: var(--space-md); /* Usa o espaçamento da variável */
-        width: 40%; 
-        padding-right: 10px;
+
+    .profile-menu a {
         white-space: nowrap;
-        text-align: left;
-        font-weight: 600;
-        color: var(--color-text-secondary);
+        /* Impede quebra de texto dos botões */
+        flex: 0 0 auto;
+        padding: 8px 12px;
+        font-size: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .logout-link {
+        margin-top: 0;
+        border-top: none;
+        border-left: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 0;
+        padding-left: 15px;
+    }
+
+    .profile-layout {
+        align-items: center;
+    }
+
+    /* Conteúdo */
+    .profile-card {
+        padding: 20px;
+        width: 90vw;
+    }
+
+    /* Botão Salvar ocupa largura total */
+    .btn-save {
+        width: 100%;
+        text-align: center;
+    }
+
+    /* Input ocupa largura total */
+    .standard-form {
+        max-width: 100%;
     }
 }

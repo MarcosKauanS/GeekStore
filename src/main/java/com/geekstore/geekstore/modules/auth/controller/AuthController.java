@@ -3,7 +3,6 @@ package com.geekstore.geekstore.modules.auth.controller;
 import com.geekstore.geekstore.modules.user.model.User;
 import com.geekstore.geekstore.modules.auth.dto.RegisterDTO;
 import com.geekstore.geekstore.modules.user.service.UserService;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

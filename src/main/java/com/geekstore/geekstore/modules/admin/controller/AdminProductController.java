@@ -44,6 +44,9 @@ public class AdminProductController {
                     .orElseThrow(() -> new IllegalArgumentException("Categoria inválida: " + categoryId));
             product.setCategory(category);
 
+            // Nota: O campo 'description' já está no objeto 'product' vindo do
+            // @ModelAttribute
+
             // 2️⃣ Salva a imagem se houver
             if (fileImage != null && !fileImage.isEmpty()) {
                 String imageUrl = productService.saveImageUrl(fileImage);
@@ -74,8 +77,10 @@ public class AdminProductController {
             Product existingProduct = productService.findById(id)
                     .orElseThrow(() -> new IllegalArgumentException("Produto inválido: " + id));
 
-            // 2️⃣ Atualiza campos básicos
+            // 2️⃣ Atualiza campos básicos, incluindo a descrição
             existingProduct.setName(updatedProduct.getName());
+            // ADICIONA: Atualiza a descrição
+            existingProduct.setDescription(updatedProduct.getDescription());
             existingProduct.setPrice(updatedProduct.getPrice());
 
             // 3️⃣ Atualiza a categoria

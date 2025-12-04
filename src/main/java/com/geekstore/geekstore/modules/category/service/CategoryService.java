@@ -3,9 +3,8 @@ package com.geekstore.geekstore.modules.category.service;
 import com.geekstore.geekstore.modules.category.model.Category;
 import com.geekstore.geekstore.modules.category.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 import java.util.Optional;
+import java.util.List;
 
 @Service
 public class CategoryService {
@@ -33,5 +32,9 @@ public class CategoryService {
 
     public boolean existsByName(String name) {
         return repository.existsByName(name);
+    }
+
+    public Optional<Category> findByName(String name) {
+        return repository.findByName(name);
     }
 }

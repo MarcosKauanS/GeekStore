@@ -12,42 +12,40 @@ document.addEventListener("DOMContentLoaded", () => {
     const formOrderId = document.getElementById("orderId");
     const formStatus = document.getElementById("status");
 
-    const closeViewModal = () => viewModal.style.display = "none";
-
-    // Não existe botão "Adicionar Pedido", apenas visualizar/editar
+    const closeViewModal = () => { if (viewModal) viewModal.style.display = "none"; };
 
     document.querySelectorAll(".edit").forEach(btn => {
         btn.addEventListener("click", (e) => {
             e.preventDefault();
-            const id = btn.getAttribute("data-id");
-
-            formOrderId.value = id || "";
-            formStatus.value = btn.getAttribute("data-status");
-
-            editModalOverlay.style.display = "flex";
+            if (formOrderId) formOrderId.value = btn.getAttribute("data-id");
+            if (formStatus) formStatus.value = btn.getAttribute("data-status");
+            if (editModalOverlay) editModalOverlay.style.display = "flex";
         });
     });
 
     document.querySelectorAll(".view").forEach(btn => {
         btn.addEventListener("click", (event) => {
             event.preventDefault();
+            if (viewId) viewId.textContent = "#" + btn.getAttribute("data-id");
+            if (viewUser) viewUser.textContent = btn.getAttribute("data-user");
+            if (viewDate) viewDate.textContent = btn.getAttribute("data-date");
+            if (viewTotal) viewTotal.textContent = "R$ " + btn.getAttribute("data-total");
 
-            const id = btn.getAttribute("data-id");
+            if (viewStatus) {
+                const st = btn.getAttribute("data-status");
+                viewStatus.textContent = st;
+                viewStatus.className = "view-text status " + st; // Aplica cor
+            }
 
-            viewId.textContent = id;
-            viewUser.textContent = btn.getAttribute("data-user");
-            viewDate.textContent = btn.getAttribute("data-date");
-            viewTotal.textContent = "R$ " + btn.getAttribute("data-total");
-            viewStatus.textContent = btn.getAttribute("data-status");
-
-            btnViewEdit.onclick = () => {
-                closeViewModal();
-                formOrderId.value = (id && id !== "undefined") ? id : "";
-                formStatus.value = btn.getAttribute("data-status");
-                editModalOverlay.style.display = "flex";
-            };
-
-            viewModal.style.display = "flex";
+            if (btnViewEdit) {
+                btnViewEdit.onclick = () => {
+                    closeViewModal();
+                    if (formOrderId) formOrderId.value = btn.getAttribute("data-id");
+                    if (formStatus) formStatus.value = btn.getAttribute("data-status");
+                    if (editModalOverlay) editModalOverlay.style.display = "flex";
+                };
+            }
+            if (viewModal) viewModal.style.display = "flex";
         });
     });
 });
